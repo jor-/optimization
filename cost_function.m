@@ -121,14 +121,32 @@ classdef cost_function < handle
                 options_str = [options_str ' --eval_grad_value '];
             end
             
+            if ~ isempty(self.options.time_step)
+                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
+            end
+            
             if ~ isempty(self.options.spinup_years)
                 options_str = [options_str ' --spinup_years ' int2str(self.options.spinup_years)];
             end
+            
             if ~ isempty(self.options.spinup_tolerance)
                 options_str = [options_str ' --spinup_tolerance ' num2str(self.options.spinup_tolerance)];
             end
+            
             if ~ isempty(self.options.spinup_satisfy_years_and_tolerance) && self.options.spinup_satisfy_years_and_tolerance
                 options_str = [options_str ' --spinup_satisfy_years_and_tolerance '];
+            end
+            
+            if ~ isempty(self.options.derivative_accuracy_order)
+                options_str = [options_str ' --derivative_accuracy_order ' int2str(self.options.derivative_accuracy_order)];
+            end
+            
+            if ~ isempty(self.options.derivative_step_size)
+                options_str = [options_str ' --derivative_step_size ' num2str(self.options.derivative_step_size)];
+            end
+            
+            if ~ isempty(self.options.derivative_years)
+                options_str = [options_str ' --derivative_years ' int2str(self.options.derivative_years)];
             end
             
             if ~ isempty(self.options.nodes_setup_node_kind)
@@ -149,18 +167,6 @@ classdef cost_function < handle
             
             if ~ isempty(self.options.parameters_absolute_tolerance)
                 options_str = [options_str ' --parameters_absolute_tolerance ' num2str(self.options.parameters_absolute_tolerance)];
-            end
-            
-            if ~ isempty(self.options.derivative_accuracy_order)
-                options_str = [options_str ' --derivative_accuracy_order ' int2str(self.options.derivative_accuracy_order)];
-            end
-            
-            if ~ isempty(self.options.derivative_step_size)
-                options_str = [options_str ' --derivative_step_size ' num2str(self.options.derivative_step_size)];
-            end
-            
-            if ~ isempty(self.options.derivative_years)
-                options_str = [options_str ' --derivative_years ' int2str(self.options.derivative_years)];
             end
             
             command = [self.database_run_command ' "' options_str '"'];

@@ -12,6 +12,8 @@ classdef cost_function_options < handle
         cost_function_kind
         exchange_dir
         
+        time_step
+        
         spinup_years
         spinup_tolerance
         spinup_satisfy_years_and_tolerance
@@ -44,6 +46,9 @@ classdef cost_function_options < handle
         %         type: str
         %     'exchange_dir': The directory from where to load the parameters and where to save the cost function values.
         %         type: str
+        %     'time_step': The time step size to use in the model.
+        %         type: int
+        %         optional: Default value used if empty. default value: 1
         %     'spinup_years': The number of years for the spinup.
         %         type: int
         %         optional: Default value used if empty. default value: 10000
@@ -53,6 +58,15 @@ classdef cost_function_options < handle
         %     'spinup_satisfy_years_and_tolerance': If used, the spinup is terminated if years and tolerance have been satisfied. Otherwise, the spinup is terminated as soon as years or tolerance have been satisfied.
         %         type: boolean
         %         optional: Default value used if empty. default value: False
+        %     'derivative_accuracy_order': The accuracy order used for the finite difference approximation. 1 = forward differences. 2 = central differences.
+        %         type: int
+        %         optional: Default value used if empty. default value: 2
+        %     'derivative_step_size': The step size used for the finite difference approximation.
+        %         type: float
+        %         optional: Default value used if empty. default value: 10^(-7)
+        %     'derivative_years': The number of years for the finite difference approximation spinup.
+        %         type: int
+        %         optional: Default value used if empty. default value: 100
         %     'nodes_setup_node_kind': The node kind to use for the spinup.
         %         type: str
         %     'nodes_setup_number_of_nodes': The number of nodes to use for the spinup.
@@ -65,15 +79,6 @@ classdef cost_function_options < handle
         %     'parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
-        %     'derivative_accuracy_order': The accuracy order used for the finite difference approximation. 1 = forward differences. 2 = central differences.
-        %         type: int
-        %         optional: Default value used if empty. default value: 2
-        %     'derivative_step_size': The step size used for the finite difference approximation.
-        %         type: float
-        %         optional: Default value used if empty. default value: 10^(-7)
-        %     'derivative_years': The number of years for the finite difference approximation spinup.
-        %         type: int
-        %         optional: Default value used if empty. default value: 100
         %     'error_email_address': The email address where to write a mail if an error occurred.
         %         type: string
         %         optional: No mail is written if empty.
@@ -87,12 +92,11 @@ classdef cost_function_options < handle
         %
             
             % set default options
+            self.time_step = 1;
+            
             self.spinup_years = 10000;
             self.spinup_tolerance = eps;
             self.spinup_satisfy_years_and_tolerance = 0;
-            
-            self.parameters_absolute_tolerance = eps;
-            self.parameters_relative_tolerance = 0;
             
             self.derivative_accuracy_order = 2;
             self.derivative_step_size = 10^(-7);
@@ -101,6 +105,9 @@ classdef cost_function_options < handle
             self.nodes_setup_node_kind = [];
             self.nodes_setup_number_of_nodes = [];
             self.nodes_setup_number_of_cpus = [];
+            
+            self.parameters_absolute_tolerance = eps;
+            self.parameters_relative_tolerance = 0;
             
             self.error_email_address = []            
             
@@ -194,6 +201,14 @@ classdef cost_function_options < handle
         end
     
     
+        function self = set.time_step(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for time_step has to be a positive scalar integer or be empty.']);
+            end
+            self.time_step = value;
+        end
+    
+    
         function self = set.spinup_years(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value >= 0))
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for spinup_years has to be a positive scalar integer or be empty.']);
@@ -213,21 +228,6 @@ classdef cost_function_options < handle
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for spinup_satisfy_years_and_tolerance has to be 0 or 1.']);
             end
             self.spinup_satisfy_years_and_tolerance = value;
-        end
-        
-    
-        function self = set.parameters_absolute_tolerance(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && all(value >= 0) && (isscalar(value) || all(size(value) == [1 7]))))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_absolute_tolerance has to be a positve scalar or componentwise positive row vector with length 7 or be empty.']);
-            end
-            self.parameters_absolute_tolerance = value;
-        end
-        
-        function self = set.parameters_relative_tolerance(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && all(value >= 0) && (isscalar(value) || all(size(value) == [1 7]))))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_relative_tolerance has to be a positve scalar or componentwise positive row vector with length 7 or be empty.']);
-            end
-            self.parameters_relative_tolerance = value;
         end
     
     
@@ -272,6 +272,21 @@ classdef cost_function_options < handle
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for nodes_setup_number_of_cpus has to be a positive scalar integer or be empty.']);
             end
             self.nodes_setup_number_of_cpus = value;
+        end
+        
+    
+        function self = set.parameters_absolute_tolerance(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_absolute_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+            end
+            self.parameters_absolute_tolerance = value;
+        end
+        
+        function self = set.parameters_relative_tolerance(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_relative_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+            end
+            self.parameters_relative_tolerance = value;
         end
         
     
