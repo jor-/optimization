@@ -13,13 +13,11 @@ classdef cost_function_options < handle
         exchange_dir
         
         time_step
+        total_concentration_factor_included_in_parameters
         
         spinup_years
         spinup_tolerance
         spinup_satisfy_years_and_tolerance
-        
-        parameters_absolute_tolerance
-        parameters_relative_tolerance
         
         derivative_accuracy_order
         derivative_step_size
@@ -28,6 +26,9 @@ classdef cost_function_options < handle
         nodes_setup_node_kind
         nodes_setup_number_of_nodes
         nodes_setup_number_of_cpus
+        
+        parameters_absolute_tolerance
+        parameters_relative_tolerance
         
         error_email_address
     end
@@ -49,6 +50,9 @@ classdef cost_function_options < handle
         %     'time_step': The time step size to use in the model.
         %         type: int
         %         optional: Default value used if empty. default value: 1
+        %     'total_concentration_factor_included_in_parameters': If used, the total concentration factor is included in the parameters vector.
+        %         type: boolean
+        %         optional: Default value used if empty. default value: False
         %     'spinup_years': The number of years for the spinup.
         %         type: int
         %         optional: Default value used if empty. default value: 10000
@@ -93,6 +97,7 @@ classdef cost_function_options < handle
             
             % set default options
             self.time_step = 1;
+            self.total_concentration_factor_included_in_parameters = 0;
             
             self.spinup_years = 10000;
             self.spinup_tolerance = eps;
@@ -207,7 +212,14 @@ classdef cost_function_options < handle
             end
             self.time_step = value;
         end
-    
+        
+        function self = set.total_concentration_factor_included_in_parameters(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && any(value == [0, 1])))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for total_concentration_factor_included_in_parameters has to be 0 or 1.']);
+            end
+            self.total_concentration_factor_included_in_parameters = value;
+        end
+        
     
         function self = set.spinup_years(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value >= 0))

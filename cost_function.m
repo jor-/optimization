@@ -121,10 +121,6 @@ classdef cost_function < handle
                 options_str = [options_str ' --eval_grad_value '];
             end
             
-            if ~ isempty(self.options.time_step)
-                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
-            end
-            
             if ~ isempty(self.options.spinup_years)
                 options_str = [options_str ' --spinup_years ' int2str(self.options.spinup_years)];
             end
@@ -136,6 +132,16 @@ classdef cost_function < handle
             if ~ isempty(self.options.spinup_satisfy_years_and_tolerance) && self.options.spinup_satisfy_years_and_tolerance
                 options_str = [options_str ' --spinup_satisfy_years_and_tolerance '];
             end
+            
+            
+            if ~ isempty(self.options.time_step)
+                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
+            end
+            
+            if ~ isempty(self.options.total_concentration_factor_included_in_parameters) && self.options.total_concentration_factor_included_in_parameters
+                options_str = [options_str ' --total_concentration_factor_included_in_parameters '];
+            end
+            
             
             if ~ isempty(self.options.derivative_accuracy_order)
                 options_str = [options_str ' --derivative_accuracy_order ' int2str(self.options.derivative_accuracy_order)];
@@ -149,6 +155,7 @@ classdef cost_function < handle
                 options_str = [options_str ' --derivative_years ' int2str(self.options.derivative_years)];
             end
             
+            
             if ~ isempty(self.options.nodes_setup_node_kind)
                 options_str = [options_str ' --nodes_setup_node_kind ' num2str(self.options.nodes_setup_node_kind)];
             end
@@ -160,6 +167,7 @@ classdef cost_function < handle
             if ~ isempty(self.options.nodes_setup_number_of_cpus)
                 options_str = [options_str ' --nodes_setup_number_of_cpus ' num2str(self.options.nodes_setup_number_of_cpus)];
             end
+            
             
             if ~ isempty(self.options.parameters_relative_tolerance)
                 options_str = [options_str ' --parameters_relative_tolerance ' num2str(self.options.parameters_relative_tolerance)];

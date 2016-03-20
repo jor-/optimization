@@ -39,15 +39,21 @@ function start_optimization_global_with_options(cost_function_kind, optimization
     cost_function_options_object.spinup_tolerance = spinup_configs(2);
     cost_function_options_object.spinup_satisfy_years_and_tolerance = spinup_configs(3);
     
-    %% load parameter tolerance options
-    cost_function_options_object.parameters_relative_tolerance = load([config_dir '/parameters_relative_tolerance.txt']);
-    cost_function_options_object.parameters_absolute_tolerance = load([config_dir '/parameters_absolute_tolerance.txt']);
+    %% time step
+    optimization_options_object.time_step = 1;
+    
+    %% total concentration factor included in parameters
+    optimization_options_object.total_concentration_factor_included_in_parameters = False;
     
     %% load derivative options
     derivative_configs = load([config_dir '/derivative.txt']);
     cost_function_options_object.derivative_accuracy_order = derivative_configs(1);
     cost_function_options_object.derivative_step_size = derivative_configs(2);
     cost_function_options_object.derivative_years = derivative_configs(3);
+    
+    %% load parameter tolerance options
+    cost_function_options_object.parameters_relative_tolerance = load([config_dir '/parameters_relative_tolerance.txt']);
+    cost_function_options_object.parameters_absolute_tolerance = load([config_dir '/parameters_absolute_tolerance.txt']);
     
     %% init error options
     cost_function_options_object.error_email_address = 'jor@informatik.uni-kiel.de';
