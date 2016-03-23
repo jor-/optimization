@@ -18,7 +18,7 @@ function start_optimization_global_with_options(cost_function_kind, optimization
 %     CPUS: The number of cpus to use for the spinup.
 %         type: int
 %
-%   Copyright (C) 2011-2015 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
 
     %% init cost function options
     cost_function_options_object = cost_function_options();
@@ -33,27 +33,51 @@ function start_optimization_global_with_options(cost_function_kind, optimization
         cost_function_options_object.nodes_setup_number_of_cpus = cpus;
     end
     
+    %% load model options
+    file = [config_dir '/model.txt'];
+    try
+        model_configs = load(file);
+        cost_function_options_object.time_step = model_configs(1);
+        cost_function_options_object.total_concentration_factor_included_in_parameters = model_configs(2);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
+    
     %% load spinup options
-    spinup_configs = load([config_dir '/spinup.txt']);
-    cost_function_options_object.spinup_years = spinup_configs(1);
-    cost_function_options_object.spinup_tolerance = spinup_configs(2);
-    cost_function_options_object.spinup_satisfy_years_and_tolerance = spinup_configs(3);
-    
-    %% time step
-    optimization_options_object.time_step = 1;
-    
-    %% total concentration factor included in parameters
-    optimization_options_object.total_concentration_factor_included_in_parameters = False;
+    file = [config_dir '/spinup.txt'];
+    try
+        spinup_configs = load(file);
+        cost_function_options_object.spinup_years = spinup_configs(1);
+        cost_function_options_object.spinup_tolerance = spinup_configs(2);
+        cost_function_options_object.spinup_satisfy_years_and_tolerance = spinup_configs(3);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
     
     %% load derivative options
-    derivative_configs = load([config_dir '/derivative.txt']);
-    cost_function_options_object.derivative_accuracy_order = derivative_configs(1);
-    cost_function_options_object.derivative_step_size = derivative_configs(2);
-    cost_function_options_object.derivative_years = derivative_configs(3);
+    file = [config_dir '/derivative.txt'];
+    try
+        derivative_configs = load(file);
+        cost_function_options_object.derivative_accuracy_order = derivative_configs(1);
+        cost_function_options_object.derivative_step_size = derivative_configs(2);
+        cost_function_options_object.derivative_years = derivative_configs(3);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
     
     %% load parameter tolerance options
-    cost_function_options_object.parameters_relative_tolerance = load([config_dir '/parameters_relative_tolerance.txt']);
-    cost_function_options_object.parameters_absolute_tolerance = load([config_dir '/parameters_absolute_tolerance.txt']);
+    file = [config_dir '/parameters_relative_tolerance.txt'];
+    try
+        cost_function_options_object.parameters_relative_tolerance = load(file);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
+    file = [config_dir '/parameters_absolute_tolerance.txt'];
+    try
+        cost_function_options_object.parameters_absolute_tolerance = load(file);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
     
     %% init error options
     cost_function_options_object.error_email_address = 'jor@informatik.uni-kiel.de';
@@ -63,10 +87,15 @@ function start_optimization_global_with_options(cost_function_kind, optimization
     optimization_options_object.output_dir = optimization_output_dir;
     
     %% load global optimization options
-    global_optimization_configs = load([config_dir '/global_optimization.txt']);
-    optimization_options_object.global_trial_points = global_optimization_configs(1);
-    optimization_options_object.global_stage_one_fun_evals = global_optimization_configs(2);
-    optimization_options_object.global_max_wait_cycles = global_optimization_configs(3);
+    file = [config_dir '/global_optimization.txt'];
+    try
+        global_optimization_configs = load(file);
+        optimization_options_object.global_trial_points = global_optimization_configs(1);
+        optimization_options_object.global_stage_one_fun_evals = global_optimization_configs(2);
+        optimization_options_object.global_max_wait_cycles = global_optimization_configs(3);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
     optimization_options_object.global_distance_threshold_factor = 0.75;
     optimization_options_object.global_penalty_threshold_factor = 0.2;
     optimization_options_object.global_basin_radius_factor = 0.2;

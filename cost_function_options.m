@@ -6,12 +6,13 @@ classdef cost_function_options < handle
 %     SET_OPTION - changes an option.
 %     GET_OPTION - returns the value of an option.
 %
-%   Copyright (C) 2011-2015 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
     
     properties (Access = public)
         cost_function_kind
         exchange_dir
         
+        model_name
         time_step
         total_concentration_factor_included_in_parameters
         
@@ -47,6 +48,9 @@ classdef cost_function_options < handle
         %         type: str
         %     'exchange_dir': The directory from where to load the parameters and where to save the cost function values.
         %         type: str
+        %     'model_name': The name of the model to use.
+        %         type: str
+        %         optional: Default value used if empty. default value: dop_po4
         %     'time_step': The time step size to use in the model.
         %         type: int
         %         optional: Default value used if empty. default value: 1
@@ -96,6 +100,7 @@ classdef cost_function_options < handle
         %
             
             % set default options
+            self.model_name ='dop_po4';
             self.time_step = 1;
             self.total_concentration_factor_included_in_parameters = 0;
             
@@ -114,7 +119,7 @@ classdef cost_function_options < handle
             self.parameters_absolute_tolerance = eps;
             self.parameters_relative_tolerance = 0;
             
-            self.error_email_address = []            
+            self.error_email_address = [];
             
             % insert passed options
             if mod(nargin, 2) == 0
@@ -132,7 +137,7 @@ classdef cost_function_options < handle
         function set_option(self, name, value)
         % SET_OPTION changes an option.
         %
-        % Example:
+        % Example:896609.rzcluster4
         %     COST_FUNCTION_OPTIONS_OBJECT.SET_OPTION(NAME, VALUE)
         %
         % Input:
@@ -205,6 +210,13 @@ classdef cost_function_options < handle
             self.exchange_dir = value;
         end
     
+    
+        function self = set.model_name(self, value)
+            if ~ (isstr(value))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_name has to be a string.']);
+            end
+            self.model_name = value;
+        end
     
         function self = set.time_step(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0))

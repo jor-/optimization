@@ -5,7 +5,7 @@ classdef cost_function < handle
 %     COST_FUNCTION - creates a COST_FUNCTION object.
 %     EVAL - evaluates the cost function.
 %
-%   Copyright (C) 2011-2015 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
     
     properties (Access = protected)
         options;
@@ -121,6 +121,20 @@ classdef cost_function < handle
                 options_str = [options_str ' --eval_grad_value '];
             end
             
+            
+            if ~ isempty(self.options.model_name)
+                options_str = [options_str ' --model_name ' self.options.model_name];
+            end
+            
+            if ~ isempty(self.options.time_step)
+                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
+            end
+            
+            if ~ isempty(self.options.total_concentration_factor_included_in_parameters) && self.options.total_concentration_factor_included_in_parameters
+                options_str = [options_str ' --total_concentration_factor_included_in_parameters '];
+            end
+            
+            
             if ~ isempty(self.options.spinup_years)
                 options_str = [options_str ' --spinup_years ' int2str(self.options.spinup_years)];
             end
@@ -131,15 +145,6 @@ classdef cost_function < handle
             
             if ~ isempty(self.options.spinup_satisfy_years_and_tolerance) && self.options.spinup_satisfy_years_and_tolerance
                 options_str = [options_str ' --spinup_satisfy_years_and_tolerance '];
-            end
-            
-            
-            if ~ isempty(self.options.time_step)
-                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
-            end
-            
-            if ~ isempty(self.options.total_concentration_factor_included_in_parameters) && self.options.total_concentration_factor_included_in_parameters
-                options_str = [options_str ' --total_concentration_factor_included_in_parameters '];
             end
             
             
