@@ -2,38 +2,38 @@ function optimization_global(cost_function_opts, optimization_opts)
 % OPTIMIZATION_GLOBAL executes a global optimization.
 %
 % Example:
-%     OPTIMIZATION_GLOBAL(COST_FUNCTION_OPTS, optimization_opts)
+%     OPTIMIZATION_GLOBAL(COST_FUNCTION_OPTS, OPTIMIZATION_OPTS)
 %
 % Input:
 %     COST_FUNCTION_OPTS: The options for the cost function evaluation.
 %         type: cost_function_opts
-%     optimization_opts: The options for the optimization.
+%     OPTIMIZATION_OPTS: The options for the optimization.
 %         type: struct
-%     supported valued in optimization_opts:
-%     OUTPUT_DIR: The directory where to save informations about the optimization run.
-%         type: str
-%     P0: The parameter vector from which to start the optimization.
-%         type: float vector (of len n)
-%     P_LB: The lower bound for the optimization.
-%         type: float vector (of len n)
-%     P_UB: The upper bound for the optimization.
-%         type: float vector (of len n)
-%     P_TOL: The tolerance for which to terminate the optimization.
-%         type: float
-%     LOCAL_MAX_FUN_EVALS: Maximal number of function evaluations for a local optimization.
-%         type: int
-%     GLOBAL_TRIAL_POINTS: Number of potenzial start points for the global optimization.
-%         type: int
-%     GLOBAL_STAGE_ONE_FUN_EVALS: Number of examined start points at phase one for the global optimization.
-%         type: int
-%     GLOBAL_MAX_WAIT CYCLES: Option for the global optimization algorithm.
-%         type: int
-%     GLOBAL DISTANCE THRESHOLD_FACTOR: Option for the global optimization algorithm.
-%         type: float
-%     GLOBAL_PENALTY_THRESHOLD_FACTOR: Option for the global optimization algorithm.
-%         type: float
-%     GLOBAL_BASIN_RADIUS_FACTOR: Option for the global optimization algorithm.
-%         type: float
+%         supported valued in optimization_opts:
+%         OUTPUT_DIR: The directory where to save informations about the optimization run.
+%             type: str
+%         P0: The parameter vector from which to start the optimization.
+%             type: float vector (of len n)
+%         P_LB: The lower bound for the optimization.
+%             type: float vector (of len n)
+%         P_UB: The upper bound for the optimization.
+%             type: float vector (of len n)
+%         P_TOL: The tolerance for which to terminate the optimization.
+%             type: float
+%         LOCAL_MAX_FUN_EVALS: Maximal number of function evaluations for a local optimization.
+%             type: int
+%         GLOBAL_TRIAL_POINTS: Number of potenzial start points for the global optimization.
+%             type: int
+%         GLOBAL_STAGE_ONE_FUN_EVALS: Number of examined start points at phase one for the global optimization.
+%             type: int
+%         GLOBAL_MAX_WAIT CYCLES: Option for the global optimization algorithm.
+%             type: int
+%         GLOBAL DISTANCE THRESHOLD_FACTOR: Option for the global optimization algorithm.
+%             type: float
+%         GLOBAL_PENALTY_THRESHOLD_FACTOR: Option for the global optimization algorithm.
+%             type: float
+%         GLOBAL_BASIN_RADIUS_FACTOR: Option for the global optimization algorithm.
+%             type: float
 %
 %   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
     

@@ -1,47 +1,61 @@
-function start_optimization_global_with_options(cost_function_kind, optimization_output_dir, config_dir, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, model_name, max_box_distance_to_water, min_measurements_correlations, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_KIND, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MODEL_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
 %
 % Input:
-%     COST_FUNCTION_KIND: The cost function which should be evaluated.
+%     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
 %         type: str
-%     OPTIMIZATION_OUTPUT_DIR: The directory where to save informations about the optimization run.
+%     COST_FUNCTION_NAME: The cost function which should be evaluated.
 %         type: str
-%     CONFIG_DIR: The directory where to find the optimization options.
+%     MODEL_NAME: The name of the model to use.
 %         type: str
+%     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
+%         type: int (non-negative)
+%         optional: All measurements are used if empty.
+%     MIN_MEASUREMENTS_CORRELATIONS: The number of minimal measurements used to calculate correlations.
+%         type: int (non-negative)
+%         optional: Default value used if empty.
 %     NODE_KIND: The node kind to use for the spinup.
 %         type: str
+%         optional: Default value used if empty.
 %     NODES: The number of nodes to use for the spinup.
-%         type: int
+%         type: int (positive)
+%         optional: Default value used if empty.
 %     CPUS: The number of cpus to use for the spinup.
-%         type: int
+%         type: int (positive)
+%         optional: Default value used if empty.
 %
 %   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
 
     %% init cost function options
     cost_function_options_object = cost_function_options();
-    cost_function_options_object.cost_function_kind = cost_function_kind;
+    
+    %% set passed options
+    cost_function_options_object.cost_function_name = cost_function_name;
+    cost_function_options_object.model_name = model_name;
+    
     if nargin >= 4
-        cost_function_options_object.nodes_setup_node_kind = node_kind;
+        cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
     end
     if nargin >= 5
+        cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
+    end
+    
+    if nargin >= 6
+        cost_function_options_object.nodes_setup_node_kind = node_kind;
+    end
+    if nargin >= 7
         cost_function_options_object.nodes_setup_number_of_nodes = nodes;
     end
-    if nargin >= 6
+    if nargin >= 8
         cost_function_options_object.nodes_setup_number_of_cpus = cpus;
     end
     
-    %% load model options
-    file = [config_dir '/model.txt'];
-    try
-        model_configs = load(file);
-        cost_function_options_object.time_step = model_configs(1);
-        cost_function_options_object.total_concentration_factor_included_in_parameters = model_configs(2);
-    catch EM
-        disp(['File ' file ' was not found. Using default configurations.'])
-    end
+    
+    config_dir = [optimization_dir '/config'];
+    
     
     %% load spinup options
     file = [config_dir '/spinup.txt'];
@@ -65,26 +79,49 @@ function start_optimization_global_with_options(cost_function_kind, optimization
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    %% load parameter tolerance options
-    file = [config_dir '/parameters_relative_tolerance.txt'];
+    %% load model parameter tolerance options
+    file = [config_dir '/model_parameters_relative_tolerance.txt'];
     try
-        cost_function_options_object.parameters_relative_tolerance = load(file);
+        cost_function_options_object.model_parameters_relative_tolerance = load(file);
     catch EM
         disp(['File ' file ' was not found. Using default configurations.'])
     end
-    file = [config_dir '/parameters_absolute_tolerance.txt'];
+    file = [config_dir '/model_parameters_absolute_tolerance.txt'];
     try
-        cost_function_options_object.parameters_absolute_tolerance = load(file);
+        cost_function_options_object.model_parameters_absolute_tolerance = load(file);
     catch EM
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    %% init error options
+    %% load initial concentration with tolerance options
+    file = [config_dir '/initial_concentrations.txt'];
+    try
+        cost_function_options_object.initial_concentrations = load(file);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
+    file = [config_dir '/initial_concentrations_relative_tolerance.txt'];
+    try
+        cost_function_options_object.initial_concentrations_relative_tolerance = load(file);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
+    file = [config_dir '/initial_concentrations_absolute_tolerance.txt'];
+    try
+        cost_function_options_object.initial_concentrations_absolute_tolerance = load(file);
+    catch EM
+        disp(['File ' file ' was not found. Using default configurations.'])
+    end
+    
+    
+    %% default options
+    cost_function_options_object.time_step = 1;
     cost_function_options_object.error_email_address = 'jor@informatik.uni-kiel.de';
     
-    %% init cost function options
+    
+    %% init optimization options
     optimization_options_object = struct();
-    optimization_options_object.output_dir = optimization_output_dir;
+    optimization_options_object.output_dir = optimization_dir;
     
     %% load global optimization options
     file = [config_dir '/global_optimization.txt'];
@@ -100,7 +137,7 @@ function start_optimization_global_with_options(cost_function_kind, optimization
     optimization_options_object.global_penalty_threshold_factor = 0.2;
     optimization_options_object.global_basin_radius_factor = 0.2;
     
-    %% default configs
+    %% default options
     optimization_options_object.p_tol = 10^(-5);
     optimization_options_object.local_max_fun_evals = 200;  
     

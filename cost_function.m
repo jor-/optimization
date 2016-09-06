@@ -17,7 +17,7 @@ classdef cost_function < handle
         df_filename = 'df.mat';
         output_filename = 'out.txt';
 
-        database_run_command = '/sfs/fs3/work-sh1/sunip229/database/access';
+        database_run_command = [getenv('SIMULATION_OUTPUT_DIR') '/access'];
     end
     
     methods (Access = public)
@@ -110,15 +110,17 @@ classdef cost_function < handle
         %
         
             options_str = '';
-            options_str = [options_str ' --kind_of_cost_function ' self.options.cost_function_kind];
+            options_str = [options_str ' --cost_function_name ' self.options.cost_function_name];
             options_str = [options_str ' --exchange_dir ' self.options.exchange_dir];
             options_str = [options_str ' --debug_logging_file ' self.options.exchange_dir '/' self.output_filename];
             
-            if eval_f
-                options_str = [options_str ' --eval_function_value '];
+
+            if ~ isempty(self.options.max_box_distance_to_water)
+                options_str = [options_str ' --max_box_distance_to_water ' int2str(self.options.max_box_distance_to_water)];
             end
-            if eval_df
-                options_str = [options_str ' --eval_grad_value '];
+            
+            if ~ isempty(self.options.min_measurements_correlations)
+                options_str = [options_str ' --min_measurements_correlations ' int2str(self.options.min_measurements_correlations)];
             end
             
             
@@ -126,12 +128,12 @@ classdef cost_function < handle
                 options_str = [options_str ' --model_name ' self.options.model_name];
             end
             
-            if ~ isempty(self.options.time_step)
-                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
+            if ~ isempty(self.options.initial_concentrations)
+                options_str = [options_str ' --initial_concentrations ' num2str(self.options.initial_concentrations)];
             end
             
-            if ~ isempty(self.options.total_concentration_factor_included_in_parameters) && self.options.total_concentration_factor_included_in_parameters
-                options_str = [options_str ' --total_concentration_factor_included_in_parameters '];
+            if ~ isempty(self.options.time_step)
+                options_str = [options_str ' --time_step ' int2str(self.options.time_step)];
             end
             
             
@@ -174,12 +176,28 @@ classdef cost_function < handle
             end
             
             
-            if ~ isempty(self.options.parameters_relative_tolerance)
-                options_str = [options_str ' --parameters_relative_tolerance ' num2str(self.options.parameters_relative_tolerance)];
+            if ~ isempty(self.options.model_parameters_relative_tolerance)
+                options_str = [options_str ' --model_parameters_relative_tolerance ' num2str(self.options.model_parameters_relative_tolerance)];
             end
             
-            if ~ isempty(self.options.parameters_absolute_tolerance)
-                options_str = [options_str ' --parameters_absolute_tolerance ' num2str(self.options.parameters_absolute_tolerance)];
+            if ~ isempty(self.options.model_parameters_absolute_tolerance)
+                options_str = [options_str ' --model_parameters_absolute_tolerance ' num2str(self.options.model_parameters_absolute_tolerance)];
+            end
+            
+            if ~ isempty(self.options.initial_concentrations_relative_tolerance)
+                options_str = [options_str ' --initial_concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance)];
+            end
+            
+            if ~ isempty(self.options.initial_concentrations_absolute_tolerance)
+                options_str = [options_str ' --initial_concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance)];
+            end
+            
+            
+            if eval_f
+                options_str = [options_str ' --eval_function_value '];
+            end
+            if eval_df
+                options_str = [options_str ' --eval_grad_value '];
             end
             
             command = [self.database_run_command ' "' options_str '"'];
@@ -199,7 +217,7 @@ classdef cost_function < handle
         
             disp(['Matlab: Error at accessing the database. Exit code: ' int2str(code) '.']);
             if ~ isempty(self.options.error_email_address)
-                system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_kind ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error at evaluating the cost function ' self.options.cost_function_kind '." jor@informatik.uni-kiel.de']);
+                system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_name ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error at evaluating the cost function ' self.options.cost_function_name '." jor@informatik.uni-kiel.de']);
             end
             system(['kill ', num2str(feature('getpid'))]);
             exit(status);

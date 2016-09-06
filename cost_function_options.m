@@ -9,12 +9,16 @@ classdef cost_function_options < handle
 %   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
     
     properties (Access = public)
-        cost_function_kind
+        cost_function_name
+        model_name
+        
         exchange_dir
         
-        model_name
+        max_box_distance_to_water
+        min_measurements_correlations
+        
+        initial_concentrations
         time_step
-        total_concentration_factor_included_in_parameters
         
         spinup_years
         spinup_tolerance
@@ -28,8 +32,10 @@ classdef cost_function_options < handle
         nodes_setup_number_of_nodes
         nodes_setup_number_of_cpus
         
-        parameters_absolute_tolerance
-        parameters_relative_tolerance
+        model_parameters_absolute_tolerance
+        model_parameters_relative_tolerance
+        initial_concentrations_absolute_tolerance
+        initial_concentrations_relative_tolerance
         
         error_email_address
     end
@@ -44,48 +50,59 @@ classdef cost_function_options < handle
         %     OBJ = COST_FUNCTION_OPTIONS('OPTION1',VALUE1,'OPTION2',VALUE2,...)
         %
         % Input:
-        %     'cost_function_kind': The cost function which should be evaluated.
-        %         type: str
-        %     'exchange_dir': The directory from where to load the parameters and where to save the cost function values.
+        %     'cost_function_name': The cost function which should be evaluated.
         %         type: str
         %     'model_name': The name of the model to use.
         %         type: str
-        %         optional: Default value used if empty. default value: dop_po4
+        %     'exchange_dir': The directory from where to load the parameters and where to save the cost function values.
+        %         type: str
+        %     'max_box_distance_to_water': The maximal allowed box distance to water used to determine valid measurements.
+        %         type: int (non-negative)
+        %         optional: All measurements are used if empty.
+        %     'min_measurements_correlations': The number of minimal measurements used to calculate correlations.
+        %         type: int (non-negative)
+        %         optional: Default value used if empty.
+        %     'initial_concentrations': The initial concentrations to use for the model spinup.
+        %         type: float vector (non-negative)
+        %         optional: Default value used if empty.
         %     'time_step': The time step size to use in the model.
-        %         type: int
+        %         type: int (positive)
         %         optional: Default value used if empty. default value: 1
-        %     'total_concentration_factor_included_in_parameters': If used, the total concentration factor is included in the parameters vector.
-        %         type: boolean
-        %         optional: Default value used if empty. default value: False
         %     'spinup_years': The number of years for the spinup.
-        %         type: int
+        %         type: int (positive)
         %         optional: Default value used if empty. default value: 10000
         %     'spinup_tolerance': The tolerance for the spinup.
-        %         type: float
+        %         type: float (non-negative)
         %         optional: Default value used if empty. default value: eps
         %     'spinup_satisfy_years_and_tolerance': If used, the spinup is terminated if years and tolerance have been satisfied. Otherwise, the spinup is terminated as soon as years or tolerance have been satisfied.
         %         type: boolean
         %         optional: Default value used if empty. default value: False
         %     'derivative_accuracy_order': The accuracy order used for the finite difference approximation. 1 = forward differences. 2 = central differences.
-        %         type: int
+        %         type: int (positive)
         %         optional: Default value used if empty. default value: 2
         %     'derivative_step_size': The step size used for the finite difference approximation.
-        %         type: float
+        %         type: float (positive)
         %         optional: Default value used if empty. default value: 10^(-7)
         %     'derivative_years': The number of years for the finite difference approximation spinup.
-        %         type: int
+        %         type: int (positive)
         %         optional: Default value used if empty. default value: 100
         %     'nodes_setup_node_kind': The node kind to use for the spinup.
         %         type: str
         %     'nodes_setup_number_of_nodes': The number of nodes to use for the spinup.
-        %         type: int
+        %         type: int (positive)
         %     'nodes_setup_number_of_cpus': The number of cpus to use for the spinup.
-        %         type: int
-        %     'parameters_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
-        %         type: float vector (of len n or len 1)
+        %         type: int (positive)
+        %     'model_parameters_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
+        %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: eps
-        %     'parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
-        %         type: float vector (of len n or len 1)
+        %     'model_parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
+        %         type: float vector (non-negative) (of len n or len 1)
+        %         optional: Default value used if empty. default value: 0
+        %     'initial_concentrations_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
+        %         type: float vector (non-negative) (of len n or len 1)
+        %         optional: Default value used if empty. default value: eps
+        %     'initial_concentrations_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
+        %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
         %     'error_email_address': The email address where to write a mail if an error occurred.
         %         type: string
@@ -100,9 +117,12 @@ classdef cost_function_options < handle
         %
             
             % set default options
-            self.model_name ='dop_po4';
+            
+            self.max_box_distance_to_water = [];
+            self.min_measurements_correlations = [];
+            
+            self.initial_concentrations = [];
             self.time_step = 1;
-            self.total_concentration_factor_included_in_parameters = 0;
             
             self.spinup_years = 10000;
             self.spinup_tolerance = eps;
@@ -116,8 +136,10 @@ classdef cost_function_options < handle
             self.nodes_setup_number_of_nodes = [];
             self.nodes_setup_number_of_cpus = [];
             
-            self.parameters_absolute_tolerance = eps;
-            self.parameters_relative_tolerance = 0;
+            self.model_parameters_absolute_tolerance = eps;
+            self.model_parameters_relative_tolerance = 0;
+            self.initial_concentrations_absolute_tolerance = eps;
+            self.initial_concentrations_relative_tolerance = 0;
             
             self.error_email_address = [];
             
@@ -137,7 +159,7 @@ classdef cost_function_options < handle
         function set_option(self, name, value)
         % SET_OPTION changes an option.
         %
-        % Example:896609.rzcluster4
+        % Example:
         %     COST_FUNCTION_OPTIONS_OBJECT.SET_OPTION(NAME, VALUE)
         %
         % Input:
@@ -196,20 +218,12 @@ classdef cost_function_options < handle
     
     methods
     
-        function self = set.cost_function_kind(self, value)
+        function self = set.cost_function_name(self, value)
             if ~ (isstr(value))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for cost_function_kind has to be a string.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for cost_function_name has to be a string.']);
             end
-            self.cost_function_kind = value;
+            self.cost_function_name = value;
         end
-    
-        function self = set.exchange_dir(self, value)
-            if ~ (isstr(value))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for exchange_dir has to be a string.']);
-            end
-            self.exchange_dir = value;
-        end
-    
     
         function self = set.model_name(self, value)
             if ~ (isstr(value))
@@ -217,19 +231,53 @@ classdef cost_function_options < handle
             end
             self.model_name = value;
         end
+        
+    
+        function self = set.exchange_dir(self, value)
+            if ~ (isstr(value))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for exchange_dir has to be a string.']);
+            end
+            self.exchange_dir = value;
+        end
+        
+    
+        function self = set.max_box_distance_to_water(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isnumeric(value) && isscalar(value) && value == fix(value) && value >= 0)
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for max_box_distance_to_water has to be a non-negative scalar integer or be empty.']);
+                end
+            end
+            self.max_box_distance_to_water = value;
+        end
+    
+        function self = set.min_measurements_correlations(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0)
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_measurements_correlations has to be a positive scalar integer or be empty.']);
+                end
+            end
+            self.min_measurements_correlations = value;
+        end
+        
+    
+        function self = set.initial_concentrations(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations has to be a componentwise positive row vector or be empty.']);
+            end
+            self.initial_concentrations = value;
+        end
     
         function self = set.time_step(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0))
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for time_step has to be a positive scalar integer or be empty.']);
             end
             self.time_step = value;
-        end
-        
-        function self = set.total_concentration_factor_included_in_parameters(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && any(value == [0, 1])))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for total_concentration_factor_included_in_parameters has to be 0 or 1.']);
-            end
-            self.total_concentration_factor_included_in_parameters = value;
         end
         
     
@@ -285,32 +333,47 @@ classdef cost_function_options < handle
         end
     
         function self = set.nodes_setup_number_of_nodes(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value >= 0))
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0))
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for nodes_setup_number_of_nodes has to be a positive scalar integer or be empty.']);
             end
             self.nodes_setup_number_of_nodes = value;
         end
         
         function self = set.nodes_setup_number_of_cpus(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value >= 0))
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0))
                 error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for nodes_setup_number_of_cpus has to be a positive scalar integer or be empty.']);
             end
             self.nodes_setup_number_of_cpus = value;
         end
         
     
-        function self = set.parameters_absolute_tolerance(self, value)
+        function self = set.model_parameters_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_absolute_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
             end
-            self.parameters_absolute_tolerance = value;
+            self.model_parameters_absolute_tolerance = value;
         end
         
-        function self = set.parameters_relative_tolerance(self, value)
+        function self = set.model_parameters_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_relative_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
             end
-            self.parameters_relative_tolerance = value;
+            self.model_parameters_relative_tolerance = value;
+        end
+        
+    
+        function self = set.initial_concentrations_absolute_tolerance(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_absolute_tolerance has to be a positve scalar or be empty.']);
+            end
+            self.initial_concentrations_absolute_tolerance = value;
+        end
+        
+        function self = set.initial_concentrations_relative_tolerance(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_relative_tolerance has to be a positve scalar or be empty.']);
+            end
+            self.initial_concentrations_relative_tolerance = value;
         end
         
     
