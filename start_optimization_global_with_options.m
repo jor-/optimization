@@ -1,15 +1,13 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, model_name, max_box_distance_to_water, min_measurements_correlations, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, max_box_distance_to_water, min_measurements_correlations, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MODEL_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
 %
 % Input:
 %     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
 %         type: str
 %     COST_FUNCTION_NAME: The cost function which should be evaluated.
-%         type: str
-%     MODEL_NAME: The name of the model to use.
 %         type: str
 %     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
 %         type: int (non-negative)
@@ -32,32 +30,41 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     %% init cost function options
     cost_function_options_object = cost_function_options();
     
-    %% set passed options
+    %% cost function options
     cost_function_options_object.cost_function_name = cost_function_name;
-    cost_function_options_object.model_name = model_name;
     
-    if nargin >= 4
+    %% measurement options
+    if nargin >= 3
         cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
     end
-    if nargin >= 5
+    if nargin >= 4
         cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
     end
     
-    if nargin >= 6
+    %% node setup options
+    if nargin >= 5
         cost_function_options_object.nodes_setup_node_kind = node_kind;
     end
-    if nargin >= 7
+    if nargin >= 6
         cost_function_options_object.nodes_setup_number_of_nodes = nodes;
     end
-    if nargin >= 8
+    if nargin >= 7
         cost_function_options_object.nodes_setup_number_of_cpus = cpus;
     end
     
+    %% email
+    cost_function_options_object.error_email_address = 'jor@informatik.uni-kiel.de';
     
+    %% model options
     config_dir = [optimization_dir '/config'];
+    file = [config_dir '/model_name.txt'];
+    model_name = importdata(file);
+    model_name = model_name{1,1};
     
+    cost_function_options_object.model_name = model_name;
+    cost_function_options_object.time_step = 1;
     
-    %% load spinup options
+    %% spinup options
     file = [config_dir '/spinup.txt'];
     try
         spinup_configs = load(file);
@@ -68,7 +75,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    %% load derivative options
+    %% derivative options
     file = [config_dir '/derivative.txt'];
     try
         derivative_configs = load(file);
@@ -79,7 +86,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    %% load model parameter tolerance options
+    %% model parameter tolerance options
     file = [config_dir '/model_parameters_relative_tolerance.txt'];
     try
         cost_function_options_object.model_parameters_relative_tolerance = load(file);
@@ -93,7 +100,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    %% load initial concentration with tolerance options
+    %% initial concentration with tolerance options
     file = [config_dir '/initial_concentrations.txt'];
     try
         cost_function_options_object.initial_concentrations = load(file);
@@ -113,10 +120,6 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
-    
-    %% default options
-    cost_function_options_object.time_step = 1;
-    cost_function_options_object.error_email_address = 'jor@informatik.uni-kiel.de';
     
     
     %% init optimization options
