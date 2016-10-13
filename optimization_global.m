@@ -117,11 +117,9 @@ function optimization_global(cost_function_opts, optimization_opts)
         
         file_suffix = [sprintf('%03i', all_iteration_index - 1) '.txt'];
         iteration_p_file = [iterations_dir '/all_p_' file_suffix];
-        p = p';
         save(iteration_p_file, 'p', '-ascii', '-double');
-        p = p';
         if scale
-            p_unscaled = cost_function_object.p_unscale(p)';
+            p_unscaled = cost_function_object.p_unscale(p);
             iteration_p_unscaled_file = [iterations_dir '/all_p_unscaled_' file_suffix];
             save(iteration_p_unscaled_file, 'p_unscaled', '-ascii', '-double') ;
         end
@@ -171,11 +169,10 @@ function optimization_global(cost_function_opts, optimization_opts)
         save(solver_iterations_file, 'solver_p_iteration', 'solver_f_iteration', 'solver_evals_f_iteration');
         
         file_suffix = [sprintf('%03i', solver_iteration_index - 1) '.txt'];
-        p = p';
         iteration_p_file = [iterations_dir '/solver_p_' file_suffix];
         save(iteration_p_file, 'p', '-ascii', '-double') ;
         if scale
-            p_unscaled = cost_function_object.p_unscale(p')';
+            p_unscaled = cost_function_object.p_unscale(p);
             iteration_p_unscaled_file = [iterations_dir '/solver_p__unscaled_' file_suffix];
             save(iteration_p_unscaled_file, 'p_unscaled', '-ascii', '-double') ;
         end

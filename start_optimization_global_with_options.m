@@ -142,10 +142,10 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     optimization_options_object.local_max_fun_evals = 200;  
     
     %% load parameter options
-    optimization_options_object.p0 = load([config_dir '/p0.txt'])';
+    optimization_options_object.p0 = load([config_dir '/p0.txt']);
     p_b = load([config_dir '/pb.txt']);
-    optimization_options_object.p_lb = p_b(1,:);
-    optimization_options_object.p_ub = p_b(2,:);
+    optimization_options_object.p_lb = p_b(:,1);
+    optimization_options_object.p_ub = p_b(:,2);
     
     %% print options
     cost_function_options_object

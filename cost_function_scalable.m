@@ -58,11 +58,11 @@ classdef cost_function_scalable < cost_function & handle
         end
         
         function dfs = df_scale(self, df)
-            dfs = df .* (self.p_ub - self.p_lb)' / 2 * self.f_scaling_factor;
+            dfs = df .* (self.p_ub - self.p_lb) / 2 * self.f_scaling_factor;
         end
         
         function df = df_unscale(self, dfs)
-            df = dfs ./ (self.p_ub - self.p_lb)' * 2 / self.f_scaling_factor;
+            df = dfs ./ (self.p_ub - self.p_lb) * 2 / self.f_scaling_factor;
         end
         
         
