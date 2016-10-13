@@ -111,29 +111,47 @@ function optimization_global(cost_function_opts, optimization_opts)
             all_iteration_index = all_iteration_index + 1;
         end
         
+        %% save p
         all_p_iteration{all_iteration_index} = p;
         save(all_iterations_file, 'all_p_iteration', 'all_f_iteration');
         
         file_suffix = [sprintf('%03i', all_iteration_index - 1) '.txt'];
         iteration_p_file = [iterations_dir '/all_p_' file_suffix];
         p = p';
-        save(iteration_p_file, 'p', '-ascii', '-double') ;
+        save(iteration_p_file, 'p', '-ascii', '-double');
         p = p';
+        if scale
+            p_unscaled = cost_function_object.p_unscale(p)';
+            iteration_p_unscaled_file = [iterations_dir '/all_p_unscaled_' file_suffix];
+            save(iteration_p_unscaled_file, 'p_unscaled', '-ascii', '-double') ;
+        end
         
+        %% eval
         if nargout == 2
             [f, df] = cost_function_object.eval(p);
         else
             f = cost_function_object.eval(p);
         end
         
+        %% save f and df
         all_f_iteration{all_iteration_index} = f;
         save(all_iterations_file, 'all_p_iteration', 'all_f_iteration');
         
         iteration_f_file = [iterations_dir '/all_f_' file_suffix];
         save(iteration_f_file, 'f', '-ascii', '-double');
+        if scale
+            f_unscaled = cost_function_object.f_unscale(f);
+            iteration_f_unscaled_file = [iterations_dir '/all_f_unscaled_' file_suffix];
+            save(iteration_f_unscaled_file, 'f_unscaled', '-ascii', '-double') ;
+        end
         if nargout == 2
             iteration_df_file = [iterations_dir '/all_df_' file_suffix];
             save(iteration_df_file, 'df', '-ascii', '-double');
+            if scale
+                df_unscaled = cost_function_object.df_unscale(df);
+                iteration_df_unscaled_file = [iterations_dir '/all_df_unscaled_' file_suffix];
+                save(iteration_df_unscaled_file, 'df_unscaled', '-ascii', '-double') ;
+            end
         end
     end
     
@@ -156,8 +174,19 @@ function optimization_global(cost_function_opts, optimization_opts)
         p = p';
         iteration_p_file = [iterations_dir '/solver_p_' file_suffix];
         save(iteration_p_file, 'p', '-ascii', '-double') ;
+        if scale
+            p_unscaled = cost_function_object.p_unscale(p')';
+            iteration_p_unscaled_file = [iterations_dir '/solver_p__unscaled_' file_suffix];
+            save(iteration_p_unscaled_file, 'p_unscaled', '-ascii', '-double') ;
+        end
+        
         iteration_f_file = [iterations_dir '/solver_f_' file_suffix];
         save(iteration_f_file, 'f', '-ascii', '-double');
+        if scale
+            f_unscaled = cost_function_object.f_unscale(f);
+            iteration_f_unscaled_file = [iterations_dir '/solver_f__unscaled_' file_suffix];
+            save(iteration_f_unscaled_file, 'f_unscaled', '-ascii', '-double') ;
+        end
         eval_f_index = all_iteration_index - 1;
         iteration_evals_f_file = [iterations_dir '/solver_eval_f_index_' file_suffix];
         save(iteration_evals_f_file, 'eval_f_index', '-ascii', '-double');
