@@ -60,16 +60,21 @@ function optimization_global(cost_function_opts, optimization_opts)
     solver_f_iteration{1} = [];
     solver_evals_f_iteration{1} = [];
     
-    scale=1;
+    %% get parameters
+    p0 = optimization_opts.p0;
+    p_lb = optimization_opts.p_lb;
+    p_ub = optimization_opts.p_ub;
     
+    %% init cost function and scale
+    scale = 1;
     if scale
         %% init cost function
-        cost_function_object = cost_function_scalable(cost_function_opts, optimization_opts.p_lb, optimization_opts.p_ub);
+        cost_function_object = cost_function_scalable(cost_function_opts, p_lb, p_ub);
         
         %% scale parameters
-        p0 = cost_function_object.p_scale(optimization_opts.p0);
-        p_lb = cost_function_object.p_scale(optimization_opts.p_lb);
-        p_ub = cost_function_object.p_scale(optimization_opts.p_ub);
+        p0 = cost_function_object.p_scale(p0);
+        p_lb = cost_function_object.p_scale(p_lb);
+        p_ub = cost_function_object.p_scale(p_ub);
         
         %% scale cost function
         f0 = cost_function_object.eval(p0);
@@ -78,11 +83,6 @@ function optimization_global(cost_function_opts, optimization_opts)
     else
         %% init cost function
         cost_function_object = cost_function(cost_function_opts);
-        
-        %% get parameters
-        p0 = optimization_opts.p0;
-        p_lb = optimization_opts.p_lb;
-        p_ub = optimization_opts.p_ub;
     end
     
     %% configure solver
@@ -107,6 +107,7 @@ function optimization_global(cost_function_opts, optimization_opts)
     
     %% cost function iteration saving function
     function [f, df] = cost_function_eval_with_save_iterations(p)
+        %% increase iteration index
         if all_iteration_index == 0 || ~ all(all_p_iteration{all_iteration_index} == p)
             all_iteration_index = all_iteration_index + 1;
         end
