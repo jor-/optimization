@@ -43,6 +43,8 @@ classdef cost_function_scalable < cost_function & handle
         
         function ps = p_scale(self, p)
             ps = (2 * p  - (self.p_ub + self.p_lb)) ./ (self.p_ub - self.p_lb);
+            constant_parameters_mask = self.p_lb == self.p_ub;
+            ps(constant_parameters_mask) = 0;
         end
         
         function p = p_unscale(self, ps)
@@ -84,7 +86,6 @@ classdef cost_function_scalable < cost_function & handle
         %     DF: the scaled value of the derivative of the cost function 
         %         type: float vector (of len n)
         %
-        
             
             p = self.p_unscale(ps);
             if nargout == 2
