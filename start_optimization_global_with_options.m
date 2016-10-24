@@ -1,8 +1,8 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, max_box_distance_to_water, min_measurements_correlations, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, max_box_distance_to_water, min_measurements_correlation, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, min_measurements_correlation, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
 %
 % Input:
 %     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
@@ -12,7 +12,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
 %     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
 %         type: int (non-negative)
 %         optional: All measurements are used if empty.
-%     MIN_MEASUREMENTS_CORRELATIONS: The number of minimal measurements used to calculate correlations.
+%     min_measurements_correlation: The number of minimal measurements used to calculate correlations.
 %         type: int (non-negative)
 %         optional: Default value used if empty.
 %     NODE_KIND: The node kind to use for the spinup.
@@ -38,7 +38,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
     end
     if nargin >= 4
-        cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
+        cost_function_options_object.min_measurements_correlation = min_measurements_correlation;
     end
     
     %% node setup options

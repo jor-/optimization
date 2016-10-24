@@ -15,7 +15,7 @@ classdef cost_function_options < handle
         exchange_dir
         
         max_box_distance_to_water
-        min_measurements_correlations
+        min_measurements_correlation
         
         initial_concentrations
         time_step
@@ -59,7 +59,7 @@ classdef cost_function_options < handle
         %     'max_box_distance_to_water': The maximal allowed box distance to water used to determine valid measurements.
         %         type: int (non-negative)
         %         optional: All measurements are used if empty.
-        %     'min_measurements_correlations': The number of minimal measurements used to calculate correlations.
+        %     'min_measurements_correlation': The number of minimal measurements used to calculate correlations.
         %         type: int (non-negative)
         %         optional: Default value used if empty.
         %     'initial_concentrations': The initial concentrations to use for the model spinup.
@@ -119,7 +119,7 @@ classdef cost_function_options < handle
             % set default options
             
             self.max_box_distance_to_water = [];
-            self.min_measurements_correlations = [];
+            self.min_measurements_correlation = [];
             
             self.initial_concentrations = [];
             self.time_step = 1;
@@ -253,16 +253,16 @@ classdef cost_function_options < handle
             self.max_box_distance_to_water = value;
         end
     
-        function self = set.min_measurements_correlations(self, value)
+        function self = set.min_measurements_correlation(self, value)
             if ~ isempty(value)
                 if ischar(value)
                     value = str2num(value);
                 end
                 if ~ (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0)
-                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_measurements_correlations has to be a positive scalar integer or be empty.']);
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_measurements_correlation has to be a positive scalar integer or be empty.']);
                 end
             end
-            self.min_measurements_correlations = value;
+            self.min_measurements_correlation = value;
         end
         
     

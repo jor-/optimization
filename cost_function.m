@@ -71,12 +71,17 @@ classdef cost_function < handle
             eval_f = nargout >= 1;
             eval_df = nargout == 2;
             command = self.database_command(eval_f, eval_df);
-            fid = fopen([self.options.exchange_dir '/' 'run.sh'], 'w');
+            run_file = [self.options.exchange_dir '/' 'run.sh'];
+            fid = fopen(run_file, 'w');
             fprintf(fid, '%s\n', command);
             fclose(fid);
+            status = system(['chmod u+x ' run_file]);
+            if status ~= 0
+                self.handle_error(status);
+            end
             
             %% execute access command
-            status = system(command);
+            status = system(run_file);
             if status ~= 0
                 self.handle_error(status);
             end
@@ -119,8 +124,8 @@ classdef cost_function < handle
                 options_str = [options_str ' --max_box_distance_to_water ' int2str(self.options.max_box_distance_to_water)];
             end
             
-            if ~ isempty(self.options.min_measurements_correlations)
-                options_str = [options_str ' --min_measurements_correlations ' int2str(self.options.min_measurements_correlations)];
+            if ~ isempty(self.options.min_measurements_correlation)
+                options_str = [options_str ' --min_measurements_correlation ' int2str(self.options.min_measurements_correlation)];
             end
             
             
@@ -217,7 +222,7 @@ classdef cost_function < handle
         
             disp(['Matlab: Error at accessing the database. Exit code: ' int2str(code) '.']);
             if ~ isempty(self.options.error_email_address)
-                system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_name ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error at evaluating the cost function ' self.options.cost_function_name '." jor@informatik.uni-kiel.de']);
+                system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_name ' for model ' self.options.model_name ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error at evaluating the cost function ' self.options.cost_function_name '." jor@informatik.uni-kiel.de']);
             end
             system(['kill ', num2str(feature('getpid'))]);
             exit(status);
