@@ -419,7 +419,7 @@ classdef cost_function_options < handle
         %         type: str
         %
         
-            s = ['ndop_evaluation_toolbox:', 'cost_function_options', ':', method, ':', mnemonic];
+            s = ['bgc_optimization:', 'cost_function_options', ':', method, ':', mnemonic];
         end
         
     end
