@@ -124,6 +124,10 @@ classdef cost_function < handle
                 options_str = [options_str ' --max_box_distance_to_water ' int2str(self.options.max_box_distance_to_water)];
             end
             
+            if ~ isempty(self.options.min_standard_deviation)
+                options_str = [options_str ' --min_standard_deviation ' num2str(self.options.min_standard_deviation)];
+            end
+            
             if ~ isempty(self.options.min_measurements_correlation)
                 options_str = [options_str ' --min_measurements_correlation ' int2str(self.options.min_measurements_correlation)];
             end

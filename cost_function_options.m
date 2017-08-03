@@ -15,6 +15,7 @@ classdef cost_function_options < handle
         exchange_dir
         
         max_box_distance_to_water
+        min_standard_deviation
         min_measurements_correlation
         
         initial_concentrations
@@ -59,6 +60,9 @@ classdef cost_function_options < handle
         %     'max_box_distance_to_water': The maximal allowed box distance to water used to determine valid measurements.
         %         type: int (non-negative)
         %         optional: All measurements are used if empty.
+        %     'min_standard_deviation': The minimal standard deviation assumed for the measurement errors.
+        %         type: float (non-negative)
+        %         optional: Default value used if empty.
         %     'min_measurements_correlation': The number of minimal measurements used to calculate correlations.
         %         type: int (non-negative)
         %         optional: Default value used if empty.
@@ -119,6 +123,7 @@ classdef cost_function_options < handle
             % set default options
             
             self.max_box_distance_to_water = [];
+            self.min_standard_deviation = [];
             self.min_measurements_correlation = [];
             
             self.initial_concentrations = [];
@@ -252,6 +257,13 @@ classdef cost_function_options < handle
             end
             self.max_box_distance_to_water = value;
         end
+
+        function self = set.min_standard_deviation(self, value)
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_standard_deviation has to be a non-negative scalar or be empty.']);
+            end
+            self.min_standard_deviation = value;
+        end
     
         function self = set.min_measurements_correlation(self, value)
             if ~ isempty(value)
@@ -290,7 +302,7 @@ classdef cost_function_options < handle
     
         function self = set.spinup_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for spinup_tolerance has to be a positve scalar or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for spinup_tolerance has to be a positive scalar or be empty.']);
             end
             self.spinup_tolerance = value;
         end
@@ -311,8 +323,8 @@ classdef cost_function_options < handle
         end
     
         function self = set.derivative_step_size(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for derivative_step_size has to be a positve scalar or be empty.']);
+            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value > 0))
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for derivative_step_size has to be a positive scalar or be empty.']);
             end
             self.derivative_step_size = value;
         end
@@ -349,14 +361,14 @@ classdef cost_function_options < handle
     
         function self = set.model_parameters_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positive scalar or componentwise positive row vector or be empty.']);
             end
             self.model_parameters_absolute_tolerance = value;
         end
         
         function self = set.model_parameters_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positve scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positive scalar or componentwise positive row vector or be empty.']);
             end
             self.model_parameters_relative_tolerance = value;
         end
@@ -364,14 +376,14 @@ classdef cost_function_options < handle
     
         function self = set.initial_concentrations_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_absolute_tolerance has to be a positve scalar or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_absolute_tolerance has to be a positive scalar or be empty.']);
             end
             self.initial_concentrations_absolute_tolerance = value;
         end
         
         function self = set.initial_concentrations_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_relative_tolerance has to be a positve scalar or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_relative_tolerance has to be a positive scalar or be empty.']);
             end
             self.initial_concentrations_relative_tolerance = value;
         end
