@@ -35,7 +35,7 @@ function optimization_global(cost_function_opts, optimization_opts)
 %         GLOBAL_BASIN_RADIUS_FACTOR: Option for the global optimization algorithm.
 %             type: float
 %
-%   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2017 Joscha Reimer jor@informatik.uni-kiel.de
     
     %% init dirs    
     exchange_dir = [optimization_opts.output_dir '/exchange_matlab_python'];

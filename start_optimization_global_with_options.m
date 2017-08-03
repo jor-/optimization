@@ -25,7 +25,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
 %         type: int (positive)
 %         optional: Default value used if empty.
 %
-%   Copyright (C) 2011-2016 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2017 Joscha Reimer jor@informatik.uni-kiel.de
 
     %% init cost function options
     cost_function_options_object = cost_function_options();
