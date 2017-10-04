@@ -1,23 +1,23 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, max_box_distance_to_water, min_standard_deviation, min_measurements_correlation, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, min_standard_deviations, min_measurements_correlations, max_box_distance_to_water, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_STANDARD_DEVIATION, MIN_MEASUREMENTS_CORRELATION, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
 %
 % Input:
 %     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
 %         type: str
 %     COST_FUNCTION_NAME: The cost function which should be evaluated.
 %         type: str
+%     MIN_STANDARD_DEVIATIONS: The minimal standard deviations assumed for the measurement errors.
+%         type: float vector (non-negative)
+%         optional: Default value used if empty.
+%     MIN_MEASUREMENTS_CORRELATIONS: The numbers of minimal measurements used to calculate correlations.
+%         type: int vector (non-negative)
+%         optional: Default value used if empty.
 %     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
 %         type: int (non-negative)
 %         optional: All measurements are used if empty.
-%     MIN_STANDARD_DEVIATION: The minimal standard deviation assumed for the measurement errors.
-%         type: float (non-negative)
-%         optional: Default value used if empty.
-%     MIN_MEASUREMENTS_CORRELATION: The number of minimal measurements used to calculate correlations.
-%         type: int (non-negative)
-%         optional: Default value used if empty.
 %     NODE_KIND: The node kind to use for the spinup.
 %         type: str
 %         optional: Default value used if empty.
@@ -41,10 +41,10 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
     end
     if nargin >= 4
-        cost_function_options_object.min_standard_deviation = min_standard_deviation;
+        cost_function_options_object.min_standard_deviations = min_standard_deviations;
     end
     if nargin >= 5
-        cost_function_options_object.min_measurements_correlation = min_measurements_correlation;
+        cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
     end
     
     %% node setup options

@@ -15,8 +15,8 @@ classdef cost_function_options < handle
         exchange_dir
         
         max_box_distance_to_water
-        min_standard_deviation
-        min_measurements_correlation
+        min_standard_deviations
+        min_measurements_correlations
         
         initial_concentrations
         time_step
@@ -60,11 +60,11 @@ classdef cost_function_options < handle
         %     'max_box_distance_to_water': The maximal allowed box distance to water used to determine valid measurements.
         %         type: int (non-negative)
         %         optional: All measurements are used if empty.
-        %     'min_standard_deviation': The minimal standard deviation assumed for the measurement errors.
-        %         type: float (non-negative)
+        %     'min_standard_deviations': The minimal standard deviations assumed for the measurement errors.
+        %         type: float vector (non-negative)
         %         optional: Default value used if empty.
-        %     'min_measurements_correlation': The number of minimal measurements used to calculate correlations.
-        %         type: int (non-negative)
+        %     'min_measurements_correlations': The numbers of minimal measurements used to calculate correlations.
+        %         type: int vector (non-negative)
         %         optional: Default value used if empty.
         %     'initial_concentrations': The initial concentrations to use for the model spinup.
         %         type: float vector (non-negative)
@@ -123,8 +123,8 @@ classdef cost_function_options < handle
             % set default options
             
             self.max_box_distance_to_water = [];
-            self.min_standard_deviation = [];
-            self.min_measurements_correlation = [];
+            self.min_standard_deviations = [];
+            self.min_measurements_correlations = [];
             
             self.initial_concentrations = [];
             self.time_step = 1;
@@ -258,29 +258,34 @@ classdef cost_function_options < handle
             self.max_box_distance_to_water = value;
         end
 
-        function self = set.min_standard_deviation(self, value)
-            if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_standard_deviation has to be a non-negative scalar or be empty.']);
-            end
-            self.min_standard_deviation = value;
-        end
-    
-        function self = set.min_measurements_correlation(self, value)
+        function self = set.min_standard_deviations(self, value)
             if ~ isempty(value)
                 if ischar(value)
                     value = str2num(value);
                 end
-                if ~ (isnumeric(value) && isscalar(value) && value == fix(value) && value > 0)
-                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_measurements_correlation has to be a positive scalar integer or be empty.']);
+                if ~ (isnumeric(value) && all(value >= 0))
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_standard_deviations has to be a row vector with non-negative entries or be empty.']);
                 end
             end
-            self.min_measurements_correlation = value;
+            self.min_standard_deviations = value;
+        end
+    
+        function self = set.min_measurements_correlations(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isempty(value) || (isnumeric(value) && value == fix(value) && all(value > 0)))
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_measurements_correlations has to be a row vector with non-negative entries or be empty.']);
+                end
+            end
+            self.min_measurements_correlations = value;
         end
         
     
         function self = set.initial_concentrations(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations has to be a componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations has to be a row vector with non-negative entries or be empty.']);
             end
             self.initial_concentrations = value;
         end
@@ -361,14 +366,14 @@ classdef cost_function_options < handle
     
         function self = set.model_parameters_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positive scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
             end
             self.model_parameters_absolute_tolerance = value;
         end
         
         function self = set.model_parameters_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positive scalar or componentwise positive row vector or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
             end
             self.model_parameters_relative_tolerance = value;
         end
