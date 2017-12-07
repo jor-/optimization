@@ -77,7 +77,7 @@ classdef cost_function_options < handle
         %         optional: Default value used if empty. default value: 10000
         %     'spinup_tolerance': The tolerance for the spinup.
         %         type: float (non-negative)
-        %         optional: Default value used if empty. default value: eps
+        %         optional: Default value used if empty. default value: decimal resolution of float type
         %     'spinup_satisfy_years_and_tolerance': If used, the spinup is terminated if years and tolerance have been satisfied. Otherwise, the spinup is terminated as soon as years or tolerance have been satisfied.
         %         type: boolean
         %         optional: Default value used if empty. default value: False
@@ -98,13 +98,13 @@ classdef cost_function_options < handle
         %         type: int (positive)
         %     'model_parameters_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
-        %         optional: Default value used if empty. default value: eps
+        %         optional: Default value used if empty. default value: decimal resolution of float type
         %     'model_parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
         %     'initial_concentrations_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
-        %         optional: Default value used if empty. default value: eps
+        %         optional: Default value used if empty. default value: decimal resolution of float type
         %     'initial_concentrations_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
@@ -121,6 +121,8 @@ classdef cost_function_options < handle
         %
             
             % set default options
+
+            absolute_resolution = 10^ceil(log(eps)/log(10))
             
             self.max_box_distance_to_water = [];
             self.min_standard_deviations = [];
@@ -130,7 +132,7 @@ classdef cost_function_options < handle
             self.time_step = 1;
             
             self.spinup_years = 10000;
-            self.spinup_tolerance = eps;
+            self.spinup_tolerance = absolute_resolution;
             self.spinup_satisfy_years_and_tolerance = 0;
             
             self.derivative_accuracy_order = 2;
@@ -141,9 +143,9 @@ classdef cost_function_options < handle
             self.nodes_setup_number_of_nodes = [];
             self.nodes_setup_number_of_cpus = [];
             
-            self.model_parameters_absolute_tolerance = eps;
+            self.model_parameters_absolute_tolerance = absolute_resolution;
             self.model_parameters_relative_tolerance = 0;
-            self.initial_concentrations_absolute_tolerance = eps;
+            self.initial_concentrations_absolute_tolerance = absolute_resolution;
             self.initial_concentrations_relative_tolerance = 0;
             
             self.error_email_address = [];
