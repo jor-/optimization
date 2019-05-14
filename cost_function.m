@@ -76,14 +76,13 @@ classdef cost_function < handle
             fprintf(fid, '%s\n', command);
             fclose(fid);
             status = system(['chmod u+x ' run_file]);
-            if status ~= 0
-                self.handle_error(status);
-            end
+            self.handle_error(status, true, false, true, true);
             
             %% execute access command
-            status = system(run_file);
-            if status ~= 0
-                self.handle_error(status);
+            status = 1;
+            while status ~= 0
+                status = system(run_file);
+                self.handle_error(status, true, false, true, true);
             end
             
             %% load values
@@ -108,6 +107,12 @@ classdef cost_function < handle
         %
         % Example:
         %     COMMAND = COST_FUNCTION_OBJECT.DATABASE_COMMAND()
+        %
+        % Input:
+        %     EVAL_F: Whether the cost function should be evaluated.
+        %         type: boolean
+        %     EVAL_DF: Whether the derivative of the cost function should be evaluated.
+        %         type: boolean
         %
         % Output:
         %     COMMAND: the database access command
@@ -213,7 +218,7 @@ classdef cost_function < handle
         end
         
         
-        function handle_error(self, code)
+        function handle_error(self, code, send_mail, kill, create_error_file, wait)
         % HANDLE_ERROR is called if an error occures in the evaluation.
         %
         % Example:
@@ -222,14 +227,40 @@ classdef cost_function < handle
         % Input:
         %     CODE: the error code
         %         type: int
+        %     SEND_MAIL: Whether an notification about this error should be send by mail.
+        %         type: boolean
+        %     KILL: Whether this process should be killed after handling the error.
+        %         type: boolean
+        %     CREATE_ERROR_FILE: Whether to create a file with the error message.
+        %         type: boolean
+        %     WAIT: Whether to wait until the error is fixed.
+        %         type: boolean
         %
         
-            disp(['Matlab: Error at accessing the database. Exit code: ' int2str(code) '.']);
-            if ~ isempty(self.options.error_email_address)
-                system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_name ' for model ' self.options.model_name ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error at evaluating the cost function ' self.options.cost_function_name '." jor@informatik.uni-kiel.de']);
+            if code ~= 0
+                error_message = ['Matlab: Error at accessing the database. Exit code: ' int2str(code) '.'];
+                disp(error_message);
+                if nargin >=3 & send_mail & ~ isempty(self.options.error_email_address)
+                    system(['echo "An error occurred at evaluating the cost function ' self.options.cost_function_name ' for model ' self.options.model_name ' at ' self.options.exchange_dir '. The error code was ' int2str(code) '." | mail -s "Error ' int2str(code) ' at ' self.options.cost_function_name '." jor@informatik.uni-kiel.de']);
+                end
+                if nargin >=5 & (create_error_file | wait)
+                    error_file = [self.options.exchange_dir '/' 'error.out'];
+                    fid = fopen(error_file, 'w');
+                    fprintf(fid, '%s\n', error_message);
+                    fclose(fid);
+                    if nargin >=6 & wait
+                        disp(['To continue please remove ' error_file ' after the error is fixed.']);
+                        while exist(error_file, 'file') == 2
+                            pause(300);
+                        end
+                        disp(['Assume that the error is fixed and thus continue.']);
+                    end
+                end
+                if nargin >=4 & kill
+                    system(['kill ', num2str(feature('getpid'))]);
+                    exit(code);
+                end
             end
-            system(['kill ', num2str(feature('getpid'))]);
-            exit(status);
         end
         
         
