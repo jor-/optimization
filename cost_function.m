@@ -5,7 +5,7 @@ classdef cost_function < handle
 %     COST_FUNCTION - creates a COST_FUNCTION object.
 %     EVAL - evaluates the cost function.
 %
-%   Copyright (C) 2011-2017 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2019 Joscha Reimer jor@informatik.uni-kiel.de
     
     properties (Access = protected)
         options;

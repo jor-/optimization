@@ -6,7 +6,7 @@ classdef cost_function_options < handle
 %     SET_OPTION - changes an option.
 %     GET_OPTION - returns the value of an option.
 %
-%   Copyright (C) 2011-2017 Joscha Reimer jor@informatik.uni-kiel.de
+%   Copyright (C) 2011-2019 Joscha Reimer jor@informatik.uni-kiel.de
     
     properties (Access = public)
         cost_function_name
