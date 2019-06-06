@@ -1,8 +1,8 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, min_standard_deviations, min_measurements_correlations, max_box_distance_to_water, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, min_standard_deviations, min_measurements_standard_deviations, min_measurements_correlations, max_box_distance_to_water, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(COST_FUNCTION_NAME, MAX_BOX_DISTANCE_TO_WATER, MIN_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_CORRELATIONS, OPTIMIZATION_OUTPUT_DIR, CONFIG_DIR, NODE_KIND, NODES, CPUS)
 %
 % Input:
 %     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
@@ -11,6 +11,9 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
 %         type: str
 %     MIN_STANDARD_DEVIATIONS: The minimal standard deviations assumed for the measurement errors.
 %         type: float vector (non-negative)
+%         optional: Default value used if empty.
+%     MIN_MEASUREMENTS_STANDARD_DEVIATIONS: The numbers of minimal measurements used to calculate standard deviations.
+%         type: int vector (non-negative)
 %         optional: Default value used if empty.
 %     MIN_MEASUREMENTS_CORRELATIONS: The numbers of minimal measurements used to calculate correlations.
 %         type: int vector (non-negative)
@@ -44,17 +47,20 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.min_standard_deviations = min_standard_deviations;
     end
     if nargin >= 5
+        cost_function_options_object.min_measurements_standard_deviations = min_measurements_standard_deviations;
+    end
+    if nargin >= 6
         cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
     end
     
     %% node setup options
-    if nargin >= 6
+    if nargin >= 7
         cost_function_options_object.nodes_setup_node_kind = node_kind;
     end
-    if nargin >= 7
+    if nargin >= 8
         cost_function_options_object.nodes_setup_number_of_nodes = nodes;
     end
-    if nargin >= 8
+    if nargin >= 9
         cost_function_options_object.nodes_setup_number_of_cpus = cpus;
     end
     

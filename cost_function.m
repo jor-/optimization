@@ -133,10 +133,14 @@ classdef cost_function < handle
                 options_str = [options_str ' --min_standard_deviations ' num2str(self.options.min_standard_deviations)];
             end
             
+            if ~ isempty(self.options.min_measurements_standard_deviations)
+                options_str = [options_str ' --min_measurements_standard_deviations ' int2str(self.options.min_measurements_standard_deviations)];
+            end
+            
             if ~ isempty(self.options.min_measurements_correlations)
                 options_str = [options_str ' --min_measurements_correlations ' int2str(self.options.min_measurements_correlations)];
             end
-            
+
             
             if ~ isempty(self.options.model_name)
                 options_str = [options_str ' --model_name ' self.options.model_name];
