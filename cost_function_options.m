@@ -15,9 +15,10 @@ classdef cost_function_options < handle
         exchange_dir
         
         max_box_distance_to_water
-        min_standard_deviations
         min_measurements_standard_deviations
         min_measurements_correlations
+        min_standard_deviations
+        min_diag_correlations
         
         initial_concentrations
         time_step
@@ -61,14 +62,17 @@ classdef cost_function_options < handle
         %     'max_box_distance_to_water': The maximal allowed box distance to water used to determine valid measurements.
         %         type: int (non-negative)
         %         optional: All measurements are used if empty.
-        %     'min_standard_deviations': The minimal standard deviations assumed for the measurement errors.
-        %         type: float vector (non-negative)
-        %         optional: Default value used if empty.
         %     'min_measurements_standard_deviations': The numbers of minimal measurements used to calculate standard_deviations.
         %         type: int vector (non-negative)
         %         optional: Default value used if empty.
         %     'min_measurements_correlations': The numbers of minimal measurements used to calculate correlations.
         %         type: int vector (non-negative)
+        %         optional: Default value used if empty.
+        %     'min_standard_deviations': The minimal standard deviations assumed for the measurement errors.
+        %         type: float vector (non-negative)
+        %         optional: Default value used if empty.
+        %     'min_diag_correlations': The minimal value forced in the diagonal matrix of the decomposition of the correlation matrix.
+        %         type: float vector (between 0 and 1)
         %         optional: Default value used if empty.
         %     'initial_concentrations': The initial concentrations to use for the model spinup.
         %         type: float vector (non-negative)
@@ -129,9 +133,10 @@ classdef cost_function_options < handle
             absolute_resolution = 10^ceil(log(eps)/log(10))
             
             self.max_box_distance_to_water = [];
-            self.min_standard_deviations = [];
             self.min_measurements_standard_deviations = [];
             self.min_measurements_correlations = [];
+            self.min_standard_deviations = [];
+            self.min_diag_correlations = [];
             
             self.initial_concentrations = [];
             self.time_step = 1;
@@ -264,18 +269,7 @@ classdef cost_function_options < handle
             end
             self.max_box_distance_to_water = value;
         end
-
-        function self = set.min_standard_deviations(self, value)
-            if ~ isempty(value)
-                if ischar(value)
-                    value = str2num(value);
-                end
-                if ~ (isnumeric(value) && all(value >= 0))
-                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_standard_deviations has to be a row vector with non-negative entries or be empty.']);
-                end
-            end
-            self.min_standard_deviations = value;
-        end
+        
     
         function self = set.min_measurements_standard_deviations(self, value)
             if ~ isempty(value)
@@ -299,6 +293,30 @@ classdef cost_function_options < handle
                 end
             end
             self.min_measurements_correlations = value;
+        end
+
+        function self = set.min_standard_deviations(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isnumeric(value) && all(value >= 0))
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_standard_deviations has to be a row vector with non-negative entries or be empty.']);
+                end
+            end
+            self.min_standard_deviations = value;
+        end
+
+        function self = set.min_diag_correlations(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0 && value <= 1))
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for min_diag_correlations has to be a scalar between 0 and 1.']);
+                end
+            end
+            self.min_diag_correlations = value;
         end
         
     
