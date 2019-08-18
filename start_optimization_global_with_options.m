@@ -173,7 +173,11 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     catch
         optimization_options_object.p0 = load([config_dir '/p0.txt']);
     end
-    p_b = load([config_dir '/pb.txt']);
+    try
+        p_b = load([optimization_dir '/pb.txt']);
+    catch
+        p_b = load([config_dir '/pb.txt']);
+    end
     optimization_options_object.p_lb = p_b(:,1);
     optimization_options_object.p_ub = p_b(:,2);
     
