@@ -89,7 +89,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.spinup_years = spinup_configs(1);
         cost_function_options_object.spinup_tolerance = spinup_configs(2);
         cost_function_options_object.spinup_satisfy_years_and_tolerance = spinup_configs(3);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
@@ -100,7 +100,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.derivative_accuracy_order = derivative_configs(1);
         cost_function_options_object.derivative_step_size = derivative_configs(2);
         cost_function_options_object.derivative_years = derivative_configs(3);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
@@ -108,33 +108,38 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     file = [config_dir '/model_parameters_relative_tolerance.txt'];
     try
         cost_function_options_object.model_parameters_relative_tolerance = load(file);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     file = [config_dir '/model_parameters_absolute_tolerance.txt'];
     try
         cost_function_options_object.model_parameters_absolute_tolerance = load(file);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
     %% initial concentration with tolerance options
-    file = [config_dir '/initial_concentrations.txt'];
+    file = [optimization_dir '/initial_concentrations.txt'];
     try
-        cost_function_options_object.initial_concentrations = load(file);
-    catch EM
-        disp(['File ' file ' was not found. Using default configurations.'])
+        cost_function_options_object.initial_concentrations= load(file);
+    catch
+        file = [config_dir '/initial_concentrations.txt'];
+        try
+            cost_function_options_object.initial_concentrations = load(file);
+        catch
+            disp(['File ' file ' was not found. Using default configurations.'])
+        end
     end
     file = [config_dir '/initial_concentrations_relative_tolerance.txt'];
     try
         cost_function_options_object.initial_concentrations_relative_tolerance = load(file);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     file = [config_dir '/initial_concentrations_absolute_tolerance.txt'];
     try
         cost_function_options_object.initial_concentrations_absolute_tolerance = load(file);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     
@@ -151,7 +156,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         optimization_options_object.global_trial_points = global_optimization_configs(1);
         optimization_options_object.global_stage_one_fun_evals = global_optimization_configs(2);
         optimization_options_object.global_max_wait_cycles = global_optimization_configs(3);
-    catch EM
+    catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
     optimization_options_object.global_distance_threshold_factor = 0.75;
