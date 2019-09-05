@@ -141,8 +141,8 @@ classdef cost_function < handle
                 options_str = [options_str ' --min_standard_deviations ' num2str(self.options.min_standard_deviations)];
             end
             
-            if ~ isempty(self.options.min_diag_correlations)
-                options_str = [options_str ' --min_diag_correlations ' num2str(self.options.min_diag_correlations)];
+            if ~ isempty(self.options.correlation_decomposition_min_value_D)
+                options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D)];
             end
 
             

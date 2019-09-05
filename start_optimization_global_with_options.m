@@ -1,8 +1,8 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, min_measurements_standard_deviations, min_standard_deviations, min_measurements_correlations, min_diag_correlations, max_box_distance_to_water, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, min_measurements_standard_deviations, min_standard_deviations, min_measurements_correlations, correlation_decomposition_min_value_D, max_box_distance_to_water, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
-%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(OPTIMIZATION_OUTPUT_DIR, COST_FUNCTION_NAME, MIN_MEASUREMENTS_STANDARD_DEVIATIONS, MIN_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_CORRELATIONS, MIN_DIAG_CORRELATIONS, MAX_BOX_DISTANCE_TO_WATER, NODE_KIND, NODES, CPUS)
+%     START_OPTIMIZATION_GLOBAL_WITH_OPTIONS(OPTIMIZATION_OUTPUT_DIR, COST_FUNCTION_NAME, MIN_MEASUREMENTS_STANDARD_DEVIATIONS, MIN_STANDARD_DEVIATIONS, MIN_MEASUREMENTS_CORRELATIONS, correlation_decomposition_min_value_D, MAX_BOX_DISTANCE_TO_WATER, NODE_KIND, NODES, CPUS)
 %
 % Input:
 %     OPTIMIZATION_DIR: The directory where to save informations about the optimization run.
@@ -18,7 +18,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
 %     MIN_MEASUREMENTS_CORRELATIONS: The numbers of minimal measurements used to calculate correlations.
 %         type: int vector (non-negative)
 %         optional: Default value used if empty.
-%     MIN_DIAG_CORRELATIONS: The minimal standard deviations assumed for the measurement errors.
+%     correlation_decomposition_min_value_D: The minimal standard deviations assumed for the measurement errors.
 %         type: float (between 0 and 1)
 %         optional: Default value used if empty.
 %     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
@@ -56,7 +56,7 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
         cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
     end
     if nargin >= 7
-        cost_function_options_object.min_diag_correlations = min_diag_correlations;
+        cost_function_options_object.correlation_decomposition_min_value_D = correlation_decomposition_min_value_D;
     end
     
     %% node setup options
