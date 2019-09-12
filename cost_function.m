@@ -138,11 +138,11 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.min_standard_deviations)
-                options_str = [options_str ' --min_standard_deviations ' num2str(self.options.min_standard_deviations)];
+                options_str = [options_str ' --min_standard_deviations ' num2str(self.options.min_standard_deviations, 8)];
             end
             
             if ~ isempty(self.options.correlation_decomposition_min_value_D)
-                options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D)];
+                options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D, 8)];
             end
 
             
@@ -151,7 +151,7 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.initial_concentrations)
-                options_str = [options_str ' --initial_concentrations ' num2str(self.options.initial_concentrations)];
+                options_str = [options_str ' --initial_concentrations ' num2str(self.options.initial_concentrations, 8)];
             end
             
             if ~ isempty(self.options.time_step)
@@ -164,7 +164,7 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.spinup_tolerance)
-                options_str = [options_str ' --spinup_tolerance ' num2str(self.options.spinup_tolerance)];
+                options_str = [options_str ' --spinup_tolerance ' num2str(self.options.spinup_tolerance, 8)];
             end
             
             if ~ isempty(self.options.spinup_satisfy_years_and_tolerance) && self.options.spinup_satisfy_years_and_tolerance
@@ -177,7 +177,7 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.derivative_step_size)
-                options_str = [options_str ' --derivative_step_size ' num2str(self.options.derivative_step_size)];
+                options_str = [options_str ' --derivative_step_size ' num2str(self.options.derivative_step_size, 8)];
             end
             
             if ~ isempty(self.options.derivative_years)
@@ -186,32 +186,32 @@ classdef cost_function < handle
             
             
             if ~ isempty(self.options.nodes_setup_node_kind)
-                options_str = [options_str ' --nodes_setup_node_kind ' num2str(self.options.nodes_setup_node_kind)];
+                options_str = [options_str ' --nodes_setup_node_kind ' self.options.nodes_setup_node_kind];
             end
             
             if ~ isempty(self.options.nodes_setup_number_of_nodes)
-                options_str = [options_str ' --nodes_setup_number_of_nodes ' num2str(self.options.nodes_setup_number_of_nodes)];
+                options_str = [options_str ' --nodes_setup_number_of_nodes ' int2str(self.options.nodes_setup_number_of_nodes)];
             end
             
             if ~ isempty(self.options.nodes_setup_number_of_cpus)
-                options_str = [options_str ' --nodes_setup_number_of_cpus ' num2str(self.options.nodes_setup_number_of_cpus)];
+                options_str = [options_str ' --nodes_setup_number_of_cpus ' int2str(self.options.nodes_setup_number_of_cpus)];
             end
             
             
             if ~ isempty(self.options.model_parameters_relative_tolerance)
-                options_str = [options_str ' --model_parameters_relative_tolerance ' num2str(self.options.model_parameters_relative_tolerance)];
+                options_str = [options_str ' --model_parameters_relative_tolerance ' num2str(self.options.model_parameters_relative_tolerance, 8)];
             end
             
             if ~ isempty(self.options.model_parameters_absolute_tolerance)
-                options_str = [options_str ' --model_parameters_absolute_tolerance ' num2str(self.options.model_parameters_absolute_tolerance)];
+                options_str = [options_str ' --model_parameters_absolute_tolerance ' num2str(self.options.model_parameters_absolute_tolerance, 8)];
             end
             
             if ~ isempty(self.options.initial_concentrations_relative_tolerance)
-                options_str = [options_str ' --initial_concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance)];
+                options_str = [options_str ' --initial_concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance, 8)];
             end
             
             if ~ isempty(self.options.initial_concentrations_absolute_tolerance)
-                options_str = [options_str ' --initial_concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance)];
+                options_str = [options_str ' --initial_concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance, 8)];
             end
             
             
