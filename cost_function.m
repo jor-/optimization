@@ -151,7 +151,7 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.initial_concentrations)
-                options_str = [options_str ' --initial_concentrations ' num2str(self.options.initial_concentrations, 8)];
+                options_str = [options_str ' --concentrations ' num2str(self.options.initial_concentrations, 8)];
             end
             
             if ~ isempty(self.options.time_step)
@@ -207,11 +207,11 @@ classdef cost_function < handle
             end
             
             if ~ isempty(self.options.initial_concentrations_relative_tolerance)
-                options_str = [options_str ' --initial_concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance, 8)];
+                options_str = [options_str ' --concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance, 8)];
             end
             
             if ~ isempty(self.options.initial_concentrations_absolute_tolerance)
-                options_str = [options_str ' --initial_concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance, 8)];
+                options_str = [options_str ' --concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance, 8)];
             end
             
             
