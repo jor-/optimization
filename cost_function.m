@@ -120,6 +120,7 @@ classdef cost_function < handle
         %
         
             options_str = '';
+            options_str = [options_str ' ' self.options.model_name];
             options_str = [options_str ' --cost_function_name ' self.options.cost_function_name];
             options_str = [options_str ' --exchange_dir ' self.options.exchange_dir];
             options_str = [options_str ' --debug_logging_file ' self.options.exchange_dir '/' self.output_filename];
@@ -143,11 +144,6 @@ classdef cost_function < handle
             
             if ~ isempty(self.options.correlation_decomposition_min_value_D)
                 options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D, 8)];
-            end
-
-            
-            if ~ isempty(self.options.model_name)
-                options_str = [options_str ' --model_name ' self.options.model_name];
             end
             
             if ~ isempty(self.options.initial_concentrations)
