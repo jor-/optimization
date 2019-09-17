@@ -194,12 +194,12 @@ classdef cost_function < handle
             end
             
             
-            if ~ isempty(self.options.model_parameters_relative_tolerance)
-                options_str = [options_str ' --parameters_relative_tolerance ' num2str(self.options.model_parameters_relative_tolerance, 8)];
+            if ~ isempty(self.options.parameters_relative_tolerance)
+                options_str = [options_str ' --parameters_relative_tolerance ' num2str(self.options.parameters_relative_tolerance, 8)];
             end
             
-            if ~ isempty(self.options.model_parameters_absolute_tolerance)
-                options_str = [options_str ' --parameters_absolute_tolerance ' num2str(self.options.model_parameters_absolute_tolerance, 8)];
+            if ~ isempty(self.options.parameters_absolute_tolerance)
+                options_str = [options_str ' --parameters_absolute_tolerance ' num2str(self.options.parameters_absolute_tolerance, 8)];
             end
             
             if ~ isempty(self.options.concentrations_relative_tolerance)

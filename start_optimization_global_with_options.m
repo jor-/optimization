@@ -105,15 +105,15 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     end
     
     %% model parameter tolerance options
-    file = [config_dir '/model_parameters_relative_tolerance.txt'];
+    file = [config_dir '/parameters_relative_tolerance.txt'];
     try
-        cost_function_options_object.model_parameters_relative_tolerance = load(file);
+        cost_function_options_object.parameters_relative_tolerance = load(file);
     catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end
-    file = [config_dir '/model_parameters_absolute_tolerance.txt'];
+    file = [config_dir '/parameters_absolute_tolerance.txt'];
     try
-        cost_function_options_object.model_parameters_absolute_tolerance = load(file);
+        cost_function_options_object.parameters_absolute_tolerance = load(file);
     catch
         disp(['File ' file ' was not found. Using default configurations.'])
     end

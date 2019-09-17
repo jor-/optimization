@@ -35,8 +35,8 @@ classdef cost_function_options < handle
         nodes_setup_number_of_nodes
         nodes_setup_number_of_cpus
         
-        model_parameters_absolute_tolerance
-        model_parameters_relative_tolerance
+        parameters_absolute_tolerance
+        parameters_relative_tolerance
         concentrations_absolute_tolerance
         concentrations_relative_tolerance
         
@@ -104,10 +104,10 @@ classdef cost_function_options < handle
         %         type: int (positive)
         %     'nodes_setup_number_of_cpus': The number of cpus to use for the spinup.
         %         type: int (positive)
-        %     'model_parameters_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
+        %     'parameters_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: decimal resolution of float type
-        %     'model_parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
+        %     'parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
         %     'concentrations_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
@@ -153,8 +153,8 @@ classdef cost_function_options < handle
             self.nodes_setup_number_of_nodes = [];
             self.nodes_setup_number_of_cpus = [];
             
-            self.model_parameters_absolute_tolerance = absolute_resolution;
-            self.model_parameters_relative_tolerance = 0;
+            self.parameters_absolute_tolerance = absolute_resolution;
+            self.parameters_relative_tolerance = 0;
             self.concentrations_absolute_tolerance = absolute_resolution;
             self.concentrations_relative_tolerance = 0;
             
@@ -401,18 +401,18 @@ classdef cost_function_options < handle
         end
         
     
-        function self = set.model_parameters_absolute_tolerance(self, value)
+        function self = set.parameters_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_absolute_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_absolute_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
             end
-            self.model_parameters_absolute_tolerance = value;
+            self.parameters_absolute_tolerance = value;
         end
         
-        function self = set.model_parameters_relative_tolerance(self, value)
+        function self = set.parameters_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for model_parameters_relative_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for parameters_relative_tolerance has to be a positive scalar or a row vector with non-negative entries or be empty.']);
             end
-            self.model_parameters_relative_tolerance = value;
+            self.parameters_relative_tolerance = value;
         end
         
     
