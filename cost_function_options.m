@@ -20,7 +20,7 @@ classdef cost_function_options < handle
         min_standard_deviations
         correlation_decomposition_min_value_D
         
-        initial_concentrations
+        concentrations
         time_step
         
         spinup_years
@@ -37,8 +37,8 @@ classdef cost_function_options < handle
         
         model_parameters_absolute_tolerance
         model_parameters_relative_tolerance
-        initial_concentrations_absolute_tolerance
-        initial_concentrations_relative_tolerance
+        concentrations_absolute_tolerance
+        concentrations_relative_tolerance
         
         error_email_address
     end
@@ -74,7 +74,7 @@ classdef cost_function_options < handle
         %     'correlation_decomposition_min_value_D': The minimal value forced in the diagonal matrix of the decomposition of the correlation matrix.
         %         type: float vector (between 0 and 1)
         %         optional: Default value used if empty.
-        %     'initial_concentrations': The initial concentrations to use for the model spinup.
+        %     'concentrations': The initial concentrations to use for the model spinup.
         %         type: float vector (non-negative)
         %         optional: Default value used if empty.
         %     'time_step': The time step size to use in the model.
@@ -110,10 +110,10 @@ classdef cost_function_options < handle
         %     'model_parameters_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
-        %     'initial_concentrations_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
+        %     'concentrations_absolute_tolerance': The absolute tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: decimal resolution of float type
-        %     'initial_concentrations_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
+        %     'concentrations_relative_tolerance': The relative tolerance from which two parameter vectors are treated as equal.
         %         type: float vector (non-negative) (of len n or len 1)
         %         optional: Default value used if empty. default value: 0
         %     'error_email_address': The email address where to write a mail if an error occurred.
@@ -138,7 +138,7 @@ classdef cost_function_options < handle
             self.min_standard_deviations = [];
             self.correlation_decomposition_min_value_D = [];
             
-            self.initial_concentrations = [];
+            self.concentrations = [];
             self.time_step = 1;
             
             self.spinup_years = 10000;
@@ -155,8 +155,8 @@ classdef cost_function_options < handle
             
             self.model_parameters_absolute_tolerance = absolute_resolution;
             self.model_parameters_relative_tolerance = 0;
-            self.initial_concentrations_absolute_tolerance = absolute_resolution;
-            self.initial_concentrations_relative_tolerance = 0;
+            self.concentrations_absolute_tolerance = absolute_resolution;
+            self.concentrations_relative_tolerance = 0;
             
             self.error_email_address = [];
             
@@ -320,11 +320,11 @@ classdef cost_function_options < handle
         end
         
     
-        function self = set.initial_concentrations(self, value)
+        function self = set.concentrations(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations has to be a row vector with non-negative entries or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for concentrations has to be a row vector with non-negative entries or be empty.']);
             end
-            self.initial_concentrations = value;
+            self.concentrations = value;
         end
     
         function self = set.time_step(self, value)
@@ -416,18 +416,18 @@ classdef cost_function_options < handle
         end
         
     
-        function self = set.initial_concentrations_absolute_tolerance(self, value)
+        function self = set.concentrations_absolute_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_absolute_tolerance has to be a positive scalar or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for concentrations_absolute_tolerance has to be a positive scalar or be empty.']);
             end
-            self.initial_concentrations_absolute_tolerance = value;
+            self.concentrations_absolute_tolerance = value;
         end
         
-        function self = set.initial_concentrations_relative_tolerance(self, value)
+        function self = set.concentrations_relative_tolerance(self, value)
             if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0))
-                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for initial_concentrations_relative_tolerance has to be a positive scalar or be empty.']);
+                error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for concentrations_relative_tolerance has to be a positive scalar or be empty.']);
             end
-            self.initial_concentrations_relative_tolerance = value;
+            self.concentrations_relative_tolerance = value;
         end
         
     

@@ -146,8 +146,8 @@ classdef cost_function < handle
                 options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D, 8)];
             end
             
-            if ~ isempty(self.options.initial_concentrations)
-                options_str = [options_str ' --concentrations ' num2str(self.options.initial_concentrations, 8)];
+            if ~ isempty(self.options.concentrations)
+                options_str = [options_str ' --concentrations ' num2str(self.options.concentrations, 8)];
             end
             
             if ~ isempty(self.options.time_step)
@@ -202,12 +202,12 @@ classdef cost_function < handle
                 options_str = [options_str ' --parameters_absolute_tolerance ' num2str(self.options.model_parameters_absolute_tolerance, 8)];
             end
             
-            if ~ isempty(self.options.initial_concentrations_relative_tolerance)
-                options_str = [options_str ' --concentrations_relative_tolerance ' num2str(self.options.initial_concentrations_relative_tolerance, 8)];
+            if ~ isempty(self.options.concentrations_relative_tolerance)
+                options_str = [options_str ' --concentrations_relative_tolerance ' num2str(self.options.concentrations_relative_tolerance, 8)];
             end
             
-            if ~ isempty(self.options.initial_concentrations_absolute_tolerance)
-                options_str = [options_str ' --concentrations_absolute_tolerance ' num2str(self.options.initial_concentrations_absolute_tolerance, 8)];
+            if ~ isempty(self.options.concentrations_absolute_tolerance)
+                options_str = [options_str ' --concentrations_absolute_tolerance ' num2str(self.options.concentrations_absolute_tolerance, 8)];
             end
             
             
