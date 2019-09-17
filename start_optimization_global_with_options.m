@@ -1,4 +1,4 @@
-function start_optimization_global_with_options(optimization_dir, cost_function_name, min_measurements_standard_deviations, min_standard_deviations, min_measurements_correlations, correlation_decomposition_min_value_D, max_box_distance_to_water, node_kind, nodes, cpus)
+function start_optimization_global_with_options(optimization_dir, cost_function_name, min_measurements_standard_deviations, min_standard_deviations, min_measurements_correlations, correlation_decomposition_min_value_D, correlation_decomposition_min_abs_value_L, max_box_distance_to_water, node_kind, nodes, cpus)
 % START_OPTIMIZATION_GLOBAL_WITH_OPTIONS executes a global optimization with predefined options.
 %
 % Example:
@@ -18,7 +18,10 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
 %     MIN_MEASUREMENTS_CORRELATIONS: The numbers of minimal measurements used to calculate correlations.
 %         type: int vector (non-negative)
 %         optional: Default value used if empty.
-%     correlation_decomposition_min_value_D: The minimal standard deviations assumed for the measurement errors.
+%     CORRELATION_DECOMPOSITION_MIN_VALUE_D: The minimal value applied to the diagonal matrix of the decomposition of the correlation matrix.
+%         type: float (between 0 and 1)
+%         optional: Default value used if empty.
+%     CORRELATION_DECOMPOSITION_MIN_ABS_VALUE_L: The minimal absolute value applied to the triangular matrix of the decomposition of the correlation matrix.
 %         type: float (between 0 and 1)
 %         optional: Default value used if empty.
 %     MAX_BOX_DISTANCE_TO_WATER: The maximal allowed box distance to water used to determine valid measurements.
@@ -44,29 +47,32 @@ function start_optimization_global_with_options(optimization_dir, cost_function_
     
     %% measurement options
     if nargin >= 3
-        cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
-    end
-    if nargin >= 4
         cost_function_options_object.min_measurements_standard_deviations = min_measurements_standard_deviations;
     end
-    if nargin >= 5
+    if nargin >= 4
         cost_function_options_object.min_standard_deviations = min_standard_deviations;
     end
-    if nargin >= 6
+    if nargin >= 5
         cost_function_options_object.min_measurements_correlations = min_measurements_correlations;
     end
-    if nargin >= 7
+    if nargin >= 6
         cost_function_options_object.correlation_decomposition_min_value_D = correlation_decomposition_min_value_D;
+    end
+    if nargin >= 7
+        cost_function_options_object.correlation_decomposition_min_abs_value_L = correlation_decomposition_min_abs_value_L;
+    end
+    if nargin >= 8
+        cost_function_options_object.max_box_distance_to_water = max_box_distance_to_water;
     end
     
     %% node setup options
-    if nargin >= 8
+    if nargin >= 9
         cost_function_options_object.nodes_setup_node_kind = node_kind;
     end
-    if nargin >= 9
+    if nargin >= 10
         cost_function_options_object.nodes_setup_number_of_nodes = nodes;
     end
-    if nargin >= 10
+    if nargin >= 11
         cost_function_options_object.nodes_setup_number_of_cpus = cpus;
     end
     

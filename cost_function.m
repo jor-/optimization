@@ -146,6 +146,10 @@ classdef cost_function < handle
                 options_str = [options_str ' --correlation_decomposition_min_value_D ' num2str(self.options.correlation_decomposition_min_value_D, 8)];
             end
             
+            if ~ isempty(self.options.correlation_decomposition_min_abs_value_L)
+                options_str = [options_str ' --correlation_decomposition_min_abs_value_L ' num2str(self.options.correlation_decomposition_min_abs_value_L, 8)];
+            end
+            
             if ~ isempty(self.options.concentrations)
                 options_str = [options_str ' --concentrations ' num2str(self.options.concentrations, 8)];
             end

@@ -19,6 +19,7 @@ classdef cost_function_options < handle
         min_measurements_correlations
         min_standard_deviations
         correlation_decomposition_min_value_D
+        correlation_decomposition_min_abs_value_L
         
         concentrations
         time_step
@@ -71,7 +72,10 @@ classdef cost_function_options < handle
         %     'min_standard_deviations': The minimal standard deviations assumed for the measurement errors.
         %         type: float vector (non-negative)
         %         optional: Default value used if empty.
-        %     'correlation_decomposition_min_value_D': The minimal value forced in the diagonal matrix of the decomposition of the correlation matrix.
+        %     'correlation_decomposition_min_value_D': The minimal value applied to the diagonal matrix of the decomposition of the correlation matrix.
+        %         type: float vector (between 0 and 1)
+        %         optional: Default value used if empty.
+        %     'correlation_decomposition_min_abs_value_L': The minimal absolute value applied to the triangular matrix of the decomposition of the correlation matrix.
         %         type: float vector (between 0 and 1)
         %         optional: Default value used if empty.
         %     'concentrations': The initial concentrations to use for the model spinup.
@@ -137,6 +141,7 @@ classdef cost_function_options < handle
             self.min_measurements_correlations = [];
             self.min_standard_deviations = [];
             self.correlation_decomposition_min_value_D = [];
+            self.correlation_decomposition_min_abs_value_L = [];
             
             self.concentrations = [];
             self.time_step = 1;
@@ -318,7 +323,19 @@ classdef cost_function_options < handle
             end
             self.correlation_decomposition_min_value_D = value;
         end
-        
+
+        function self = set.correlation_decomposition_min_abs_value_L(self, value)
+            if ~ isempty(value)
+                if ischar(value)
+                    value = str2num(value);
+                end
+                if ~ (isempty(value) || (isnumeric(value) && isscalar(value) && value >= 0 && value <= 1))
+                    error(self.get_message_identifier('set_option', 'wrong_value'), ['The value for correlation_decomposition_min_abs_value_L has to be a scalar between 0 and 1.']);
+                end
+            end
+            self.correlation_decomposition_min_abs_value_L = value;
+        end
+               
     
         function self = set.concentrations(self, value)
             if ~ (isempty(value) || (isnumeric(value) && all(value >= 0)))
